@@ -1,0 +1,4 @@
+Vendor: NVIDIA Corporation
+Renderer: NVIDIA GeForce GTX 1650 Ti/PCIe/SSE2
+Version: 4.6.0 NVIDIA 531.14
+GLSL Version: 4.60 NVIDIA

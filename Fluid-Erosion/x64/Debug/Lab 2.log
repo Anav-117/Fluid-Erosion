@@ -1,0 +1,39 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Lab 2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  DebugCallback.cpp
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\DebugCallback.cpp(106,5): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\DebugCallback.cpp(119,5): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  InitShader.cpp
+  FluidErosion.cpp
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(131,102): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(212,139): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(255,53): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(294,53): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(340,49): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(365,49): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(390,49): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\FluidErosion.cpp(181,17): warning C4101: 'index': unreferenced local variable
+  LoadMesh.cpp
+C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\LoadMesh.cpp(178,34): warning C4018: '<': signed/unsigned mismatch
+  LoadTexture.cpp
+  Generating Code...
+  Lab 2.vcxproj -> C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\x64\Debug\Fluid-Erosion.exe
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\x64\Debug\Fluid-Erosion.exe
+  1 File(s) copied
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\shaders\lab2_fs.glsl
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\shaders\lab2_vs.glsl
+  2 File(s) copied
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\lib\assimp-vc143-mt.dll
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\lib\FreeImage.dll
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\lib\glew32.dll
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\lib\glfw3.dll
+  4 File(s) copied
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\assets\Amago0.obj
+  C:\Users\anav2\Desktop\Project Files\FluidOpenGL\Fluid-Erosion\Lab 2\assets\AmagoT.bmp
+  2 File(s) copied
