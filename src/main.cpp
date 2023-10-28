@@ -20,7 +20,8 @@
 #include <string>
 #include <vector>			//Standard template library class
 #include <GL/freeglut.h>
-
+#include <random>
+#include "PerlinNoise2d.h"
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -201,6 +202,16 @@ void Lab01() {
 	}
 }
 
+void GeneratePerlinNoise() {
+	PerlinNoise2d noise = PerlinNoise2d();
+	for (float i = -1.0; i < 1.0; i+=0.01) {
+		for (float j = -1.0; j < 1.0; j += 0.01) {
+			float noiseVal = noise.value(i, j);
+			DrawPoint(Vect3d(i, j, 0), Vect3d(noiseVal, noiseVal, noiseVal));
+		}
+	}
+}
+
 //the main rendering function
 void RenderObjects()
 {
@@ -209,7 +220,8 @@ void RenderObjects()
 	glMatrixMode(GL_MODELVIEW);
 	trackball.Set3DViewCamera();
 	//call the student's code from here
-	Lab01();
+	//Lab01();
+	GeneratePerlinNoise();
 }
 
 //Add here if you want to control some global behavior
