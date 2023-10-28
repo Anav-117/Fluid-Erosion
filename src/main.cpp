@@ -26,6 +26,9 @@
 #include "math/vect3d.h"    //for vector manipulation
 #include "trackball.h"
 
+#include "Particle.h"
+#include "Fluid.h"
+
 #pragma warning(disable : 4996)
 #pragma comment(lib, "freeglut.lib")
 
@@ -43,6 +46,9 @@ GLfloat  sign=+1; //diretcion of rotation
 const GLfloat defaultIncrement=0.7f; //speed of rotation
 GLfloat  angleIncrement=defaultIncrement;
 
+int particleMatrixSize[2] = { 5, 5 };
+Fluid fluid(particleMatrixSize);
+
 vector <Vect3d> v;   //all the points will be stored here
 
 //window size
@@ -54,6 +60,8 @@ GLint hWindow=800;
 bool tangentsFlag = false;
 bool pointsFlag = false;
 bool curveFlag = true;
+
+float elapsed_time;
 
 /*********************************
 Some OpenGL-related functions DO NOT TOUCH
@@ -99,10 +107,10 @@ void DrawLine(Vect3d a, Vect3d b, Vect3d color) {
 }
 
 //draws point at a with color 
-void DrawPoint(Vect3d a, Vect3d color) {
+void DrawPoint(Vect3d a, Vect3d color, int size = 5) {
 
 	glColor3fv(color);
-	glPointSize(5);
+	glPointSize(size);
 	glBegin(GL_POINTS);
 	 glVertex3fv(a);
 	glEnd();
@@ -171,33 +179,20 @@ void CoordSyst() {
 }
 
 //this is the actual code for the lab
-void Lab01() {
-	Vect3d a,b,c;
-	Vect3d origin(0, 0, 0);
-	Vect3d red(1, 0, 0), green(0, 1, 0), blue(0, 0, 1), almostBlack(0.1f, 0.1f, 0.1f), yellow(1, 1, 0);
+void FluidStuff() {
+	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.001;
+	fluid.SetTIme(new_time - elapsed_time);
+	elapsed_time = new_time;
 
+	fluid.AdvectParticles();
 
-	CoordSyst();
-	//draw the curve
-	if (curveFlag)
-		for (unsigned int i = 0; i < v.size() - 1; i++) {
-		DrawLine(v[i], v[i + 1], almostBlack);
-	}
-
-	//draw the points
-	if (pointsFlag)
-		for (unsigned int i = 0; i < v.size() - 1; i++) {
-		DrawPoint(v[i], blue);
-	}
-
-//draw the tangents
-	if (tangentsFlag)
-	for (unsigned int i = 0; i < v.size() - 1; i++) {
-		Vect3d tan;
-		tan = v[i + 1] - v[i]; //too simple - could be better from the point after AND before
-		tan.Normalize(); 
-		tan *= 0.2;
-		DrawLine(v[i], v[i]+tan, red);
+	std::vector<std::vector<Particle>> fp = fluid.GetParticles();
+	
+	for (int i = 0; i < fp.size(); i++) {
+		for (int j = 0; j < fp[i].size(); j++) {
+			Vect3d pos = fp[i][j].GetPos();
+			DrawPoint(pos, Vect3d(1, 0, 0), 10);
+		}
 	}
 }
 
@@ -209,7 +204,7 @@ void RenderObjects()
 	glMatrixMode(GL_MODELVIEW);
 	trackball.Set3DViewCamera();
 	//call the student's code from here
-	Lab01();
+	//FluidStuff();
 }
 
 //Add here if you want to control some global behavior
@@ -319,11 +314,16 @@ void MouseMotion(int x, int y) {
 
 int main(int argc, char **argv)
 { 
+	//fluid = Fluid(particleMatrixSize);
+
   glutInitDisplayString("stencil>=2 rgb double depth samples");
   glutInit(&argc, argv);
   glutInitWindowSize(wWindow,hWindow);
   glutInitWindowPosition(500,100);
   glutCreateWindow("Surface of Revolution");
+
+  elapsed_time = 0;
+
   //GLenum err = glewInit();
   // if (GLEW_OK != err){
   // fprintf(stderr, "Error: %s\n", glewGetErrorString(err));

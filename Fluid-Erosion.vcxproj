@@ -19,8 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Fluid.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\math\vect3d.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Fluid.h" />
+    <ClInclude Include="include\Particle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E161AD21-A6AD-4FE3-90AA-CF6551D0D9A1}</ProjectGuid>

@@ -1,0 +1,22 @@
+﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Fluid.cpp
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(33): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(41): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(42): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(52): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(53): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(56): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(57): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(77): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(92): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(108): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(119): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(125): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(126): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(141): warning C4018: '<': signed/unsigned mismatch
+c:\users\anav2\desktop\project files\fluid-erosion\src\fluid.cpp(142): warning C4018: '<': signed/unsigned mismatch
+  Fluid-Erosion.vcxproj -> C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\Debug\Fluid-Erosion.exe
