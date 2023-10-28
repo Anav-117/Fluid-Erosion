@@ -2,7 +2,7 @@
 #include "math/vect3d.h"
 #include "PerlinNoise2d.h"
 
-TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float centerY, float Z, float length, float width,float pointSize, float minHeight, int octaves, float persistance, float lacunarity) {
+TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float centerY, float Z, float length, float width, float pointSize, float minHeight, float maxHeight, int octaves, float persistance, float lacunarity) {
 	this->centerX = centerX;
 	this->centerY = centerY;
 	this->Z = Z;
@@ -10,6 +10,7 @@ TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float cen
 	this->width = width;
 	this->pointSize = pointSize;
 	this->minHeight = minHeight;
+	this->maxHeight = maxHeight;
 	this->octaves = octaves;
 	this->persistance = persistance;
 	this->lacunarity = lacunarity;
@@ -24,9 +25,9 @@ void TerrainGenerator::GeneratePoints() {
 	this->generatedPoints.clear();
 	for (float y = 0.0; y < this->width; y+=this->pointSize) {
 		for (float x = 0.0; x < this->length; x+= this->pointSize) {
-			float amplitude = 1;
-			float frequency = 1;
-			float noiseHeight = 0;
+			float amplitude = 1.0;
+			float frequency = 1.0;
+			float noiseHeight = 0.0;
 
 			for (int i = 0; i < this->octaves; i++) {
 				float sampleX = x * frequency;
@@ -37,9 +38,8 @@ void TerrainGenerator::GeneratePoints() {
 
 				amplitude *= this->persistance;
 				frequency *= this->lacunarity;
-
 			}
-			this->generatedPoints.push_back(Vect3d(this->centerX + x - this->length / 2, this->centerY + y - this->width / 2, this->Z + noiseHeight + minHeight));
+			this->generatedPoints.push_back(Vect3d(this->centerX + x - this->length / 2, this->centerY + y - this->width / 2, this->Z + noiseHeight * (maxHeight - minHeight) + minHeight));
 		}
 	}
 }

@@ -101,10 +101,10 @@ void DrawLine(Vect3d a, Vect3d b, Vect3d color) {
 }
 
 //draws point at a with color 
-void DrawPoint(Vect3d a, Vect3d color) {
+void DrawPoint(Vect3d a, Vect3d color, int pointSize = 5) {
 
 	glColor3fv(color);
-	glPointSize(5);
+	glPointSize(pointSize);
 	glBegin(GL_POINTS);
 	 glVertex3fv(a);
 	glEnd();
@@ -213,12 +213,22 @@ void GeneratePerlinNoise() {
 	}
 }
 
+void VisualizeVoxelPoints() {
+	PerlinNoise2d noise = PerlinNoise2d(0,16,2,2,10,10);
+	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01,0.0, 1.0,3,0.01,4.0);
+	vector<Vect3d> points = terrain.points();
+	for (int i = 0; i < points.size(); i++) {
+		DrawPoint(Vect3d(points[i].x(), points[i].y(), 0), Vect3d(points[i].z(), points[i].z(), points[i].z()));
+	}
+}
+
 void GenerateVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d();
-	TerrainGenerator terrain = TerrainGenerator(noise,0.0,0.0,-1.0,2.0,2.0);
+	PerlinNoise2d noise = PerlinNoise2d(0, 16, 2, 2, 10, 10);
+	float zpos = 1.0f;
+	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
 	vector<Vect3d> voxelPoints = terrain.voxelPoints();
 	for (int i = 0; i < voxelPoints.size(); i++) {
-		DrawPoint(voxelPoints[i], Vect3d(0.1f, 0.1f, 0.1f));
+		DrawPoint(voxelPoints[i], Vect3d(zpos + voxelPoints[i].y(), zpos + voxelPoints[i].y(), zpos + voxelPoints[i].y()), 20);
 	}
 }
 
@@ -232,6 +242,7 @@ void RenderObjects()
 	//call the student's code from here
 	//Lab01();
 	//GeneratePerlinNoise();
+	//VisualizeVoxelPoints();
 	GenerateVoxelPoints();
 }
 
