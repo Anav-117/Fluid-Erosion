@@ -22,6 +22,7 @@
 #include <GL/freeglut.h>
 #include <random>
 #include "PerlinNoise2d.h"
+#include "TerrainGenerator.h"
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -212,6 +213,15 @@ void GeneratePerlinNoise() {
 	}
 }
 
+void GenerateVoxelPoints() {
+	PerlinNoise2d noise = PerlinNoise2d();
+	TerrainGenerator terrain = TerrainGenerator(noise,0.0,0.0,-1.0,2.0,2.0);
+	vector<Vect3d> voxelPoints = terrain.voxelPoints();
+	for (int i = 0; i < voxelPoints.size(); i++) {
+		DrawPoint(voxelPoints[i], Vect3d(0.1f, 0.1f, 0.1f));
+	}
+}
+
 //the main rendering function
 void RenderObjects()
 {
@@ -221,7 +231,8 @@ void RenderObjects()
 	trackball.Set3DViewCamera();
 	//call the student's code from here
 	//Lab01();
-	GeneratePerlinNoise();
+	//GeneratePerlinNoise();
+	GenerateVoxelPoints();
 }
 
 //Add here if you want to control some global behavior
