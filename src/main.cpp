@@ -34,6 +34,8 @@
 #pragma warning(disable : 4996)
 #pragma comment(lib, "freeglut.lib")
 
+#define g 9.8
+
 using namespace std;
 
 //some trackball variables -> used in mouse feedback
@@ -48,8 +50,15 @@ GLfloat  sign=+1; //diretcion of rotation
 const GLfloat defaultIncrement=0.7f; //speed of rotation
 GLfloat  angleIncrement=defaultIncrement;
 
-int particleMatrixSize[2] = { 15,15 };
-Fluid fluid(particleMatrixSize);
+Vect3d wind = Vect3d(5, 0, 0);
+Vect3d gforce = Vect3d(0, -g, 0);
+
+int particleMatrixSize[3] = { 5,5,5 };
+float startPositionOffset[3] = { 0,0,0 };
+Fluid fluid(particleMatrixSize, true, startPositionOffset, 0.5, 6500, gforce+wind);
+
+float startPositionOffsetCloud[3] = { 0,0.6,0 };
+Fluid cloud(particleMatrixSize, false, startPositionOffsetCloud, 0.05, 100, wind);
 
 vector <Vect3d> v;   //all the points will be stored here
 
@@ -184,6 +193,7 @@ void CoordSyst() {
 void FluidStuff(std::vector<Vect3d> t) {
 	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
 	fluid.SetTime(new_time - elapsed_time);
+	cloud.SetTime(new_time - elapsed_time);
 	elapsed_time = new_time;
 
 	//std::vector<Vect3d> t;
@@ -200,15 +210,30 @@ void FluidStuff(std::vector<Vect3d> t) {
 	//}
 
 	fluid.SetTerrain(t);
+	cloud.SetTerrain(t);
 
-	fluid.AdvectParticles();
+	fluid.AdvectParticles(gforce+wind);
+	cloud.AdvectParticles(wind);
 
-	std::vector<std::vector<Particle>> fp = fluid.GetParticles();
+	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
 	
 	for (int i = 0; i < fp.size(); i++) {
 		for (int j = 0; j < fp[i].size(); j++) {
-			Vect3d pos = fp[i][j].GetPos();
-			DrawPoint(pos, Vect3d(1, 0, 0), 10);
+			for (int k = 0; k < fp[i][j].size(); k++) {
+				Vect3d pos = fp[i][j][k].GetPos();
+				DrawPoint(pos, Vect3d(0, 0, 1), 10);
+			}
+		}
+	}
+
+	std::vector<std::vector<std::vector<Particle>>> cp = cloud.GetParticles();
+
+	for (int i = 0; i < cp.size(); i++) {
+		for (int j = 0; j < cp[i].size(); j++) {
+			for (int k = 0; k < cp[i][j].size(); k++) {
+				Vect3d pos = cp[i][j][k].GetPos();
+				DrawPoint(pos, Vect3d(1, 1, 1), 10);
+			}
 		}
 	}
 }
