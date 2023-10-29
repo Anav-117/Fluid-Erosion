@@ -2,10 +2,10 @@
 #include "math/vect3d.h"
 #include "PerlinNoise2d.h"
 
-TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float centerY, float Z, float length, float width, float pointSize, float minHeight, float maxHeight, int octaves, float persistance, float lacunarity) {
+TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float centerZ, float Y, float length, float width, float pointSize, float minHeight, float maxHeight, int octaves, float persistance, float lacunarity) {
 	this->centerX = centerX;
-	this->centerY = centerY;
-	this->Z = Z;
+	this->centerZ = centerZ;
+	this->Y = Y;
 	this->length = length;
 	this->width = width;
 	this->pointSize = pointSize;
@@ -23,7 +23,7 @@ TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float cen
 
 void TerrainGenerator::GeneratePoints() {
 	this->generatedPoints.clear();
-	for (float y = 0.0; y < this->width; y+=this->pointSize) {
+	for (float z = 0.0; z < this->width; z+=this->pointSize) {
 		for (float x = 0.0; x < this->length; x+= this->pointSize) {
 			float amplitude = 1.0;
 			float frequency = 1.0;
@@ -31,15 +31,15 @@ void TerrainGenerator::GeneratePoints() {
 
 			for (int i = 0; i < this->octaves; i++) {
 				float sampleX = x * frequency;
-				float sampleY = y * frequency;
+				float sampleZ = z * frequency;
 
-				float perlinNoise = this->noise.value(sampleX, sampleY);
+				float perlinNoise = this->noise.value(sampleX, sampleZ);
 				noiseHeight += perlinNoise * amplitude;
 
 				amplitude *= this->persistance;
 				frequency *= this->lacunarity;
 			}
-			this->generatedPoints.push_back(Vect3d(this->centerX + x - this->length / 2, this->centerY + y - this->width / 2, this->Z + noiseHeight * (maxHeight - minHeight) + minHeight));
+			this->generatedPoints.push_back(Vect3d(this->centerX + x - this->length / 2, this->Y + noiseHeight * (maxHeight - minHeight) + minHeight, this->centerZ + z - this->width / 2));
 		}
 	}
 }
@@ -49,8 +49,8 @@ void TerrainGenerator::GenerateVoxelPoints() {
 	for (int j = 0; j < this->generatedPoints.size(); j++) {
 		Vect3d curPoint = this->generatedPoints[j];
 		std::vector<Vect3d> vp;
-		for (float k = this->Z; k < curPoint.z(); k+= this->pointSize) {
-			vp.push_back(Vect3d(curPoint.x(), k, curPoint.y()));
+		for (float k = this->Y; k < curPoint.y(); k+= this->pointSize) {
+			vp.push_back(Vect3d(curPoint.x(), k, curPoint.z()));
 		}
 		this->generatedVoxelPoints.push_back(vp);
 	}
