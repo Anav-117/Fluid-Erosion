@@ -50,7 +50,7 @@ GLfloat  sign=+1; //diretcion of rotation
 const GLfloat defaultIncrement=0.7f; //speed of rotation
 GLfloat  angleIncrement=defaultIncrement;
 
-Vect3d wind = Vect3d(5, 0, 0);
+Vect3d wind = Vect3d(1, 0, 0);
 Vect3d gforce = Vect3d(0, -g, 0);
 
 int particleMatrixSize[3] = { 5,5,5 };
