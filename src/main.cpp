@@ -239,7 +239,7 @@ vector<Vect3d> GenerateVoxelPoints() {
 	vector<vector<Vect3d>> voxelPoints = terrain.voxelPoints();
 	for (int i = 0; i < voxelPoints.size(); i++) {
 		for (int j = 0; j < voxelPoints[i].size(); j++) {
-			DrawPoint(voxelPoints[i][j], Vect3d((zpos + voxelPoints[i][j].y()) * .5, (zpos + voxelPoints[i][j].y()) * 1.0, (zpos + voxelPoints[i][j].y()) * 0.25), 25);
+			DrawPoint(voxelPoints[i][j], Vect3d((zpos + voxelPoints[i][j].y()) * .95, (zpos + voxelPoints[i][j].y()) * .5, (zpos + voxelPoints[i][j].y()) * 0.05), 25);
 		}
 	}
 
