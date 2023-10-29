@@ -35,7 +35,7 @@ Fluid::Fluid(int particleMatrixSize[]) {
 
 			float x_off = (3.0 / (float)particleMatrixSize[0]);
 			float y_off = (3.0 / (float)particleMatrixSize[1]);
-			Particle part(Vect3d(0,0,0));// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
+			Particle part(Vect3d(rand()%3 - 1.0, 0, rand() % 3 - 1.0));// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
 			//Vect3d pos = part.GetPos();
 			//std::cout << pos.x() << " : " << pos.y() << " : " << pos.z() << "\n";
 			part.SetMass(6500);

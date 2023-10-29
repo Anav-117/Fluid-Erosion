@@ -48,7 +48,7 @@ GLfloat  sign=+1; //diretcion of rotation
 const GLfloat defaultIncrement=0.7f; //speed of rotation
 GLfloat  angleIncrement=defaultIncrement;
 
-int particleMatrixSize[2] = { 10,10 };
+int particleMatrixSize[2] = { 15,15 };
 Fluid fluid(particleMatrixSize);
 
 vector <Vect3d> v;   //all the points will be stored here
@@ -224,7 +224,7 @@ void GeneratePerlinNoise() {
 }
 
 void VisualizeVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d(0,16,2,2,10,10);
+	PerlinNoise2d noise = PerlinNoise2d(0,32,2,2,10,10);
 	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01,0.0, 1.0,3,0.01,4.0);
 	vector<Vect3d> points = terrain.points();
 	for (int i = 0; i < points.size(); i++) {
@@ -233,13 +233,13 @@ void VisualizeVoxelPoints() {
 }
 
 vector<Vect3d> GenerateVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d(0, 32, 2, 2, 10, 10);
+	PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 	float zpos = 1.0f;
 	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
 	vector<vector<Vect3d>> voxelPoints = terrain.voxelPoints();
 	for (int i = 0; i < voxelPoints.size(); i++) {
 		for (int j = 0; j < voxelPoints[i].size(); j++) {
-			DrawPoint(voxelPoints[i][j], Vect3d(zpos + voxelPoints[i][j].y(), zpos + voxelPoints[i][j].y(), zpos + voxelPoints[i][j].y()), 20);
+			DrawPoint(voxelPoints[i][j], Vect3d((zpos + voxelPoints[i][j].y()) * .5, (zpos + voxelPoints[i][j].y()) * 1.0, (zpos + voxelPoints[i][j].y()) * 0.25), 25);
 		}
 	}
 

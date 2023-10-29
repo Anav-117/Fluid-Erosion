@@ -1,9 +1,23 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Lab 2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
 cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  TerrainGenerator.cpp
-C:\Fluid-Erosion\TerrainGenerator.cpp(49,20): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+C:\Fluid-Erosion\src\main.cpp(115,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(185,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(208,20): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(209,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(218,39): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(219,42): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(228,94): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(228,78): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(230,20): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(238,99): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(238,80): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(240,20): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(241,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(242,146): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(242,108): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(242,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating Code...
   Skipping... (no relevant changes detected)
   PerlinNoise2d.cpp
-  main.cpp
   Fluid-Erosion.vcxproj -> C:\Fluid-Erosion\Debug\Fluid-Erosion.exe
