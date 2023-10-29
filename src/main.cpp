@@ -20,7 +20,9 @@
 #include <string>
 #include <vector>			//Standard template library class
 #include <GL/freeglut.h>
-
+#include <random>
+#include "PerlinNoise2d.h"
+#include "TerrainGenerator.h"
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -46,7 +48,7 @@ GLfloat  sign=+1; //diretcion of rotation
 const GLfloat defaultIncrement=0.7f; //speed of rotation
 GLfloat  angleIncrement=defaultIncrement;
 
-int particleMatrixSize[2] = { 5, 5 };
+int particleMatrixSize[2] = { 10,10 };
 Fluid fluid(particleMatrixSize);
 
 vector <Vect3d> v;   //all the points will be stored here
@@ -107,10 +109,10 @@ void DrawLine(Vect3d a, Vect3d b, Vect3d color) {
 }
 
 //draws point at a with color 
-void DrawPoint(Vect3d a, Vect3d color, int size = 5) {
+void DrawPoint(Vect3d a, Vect3d color, int pointSize = 5) {
 
 	glColor3fv(color);
-	glPointSize(size);
+	glPointSize(pointSize);
 	glBegin(GL_POINTS);
 	 glVertex3fv(a);
 	glEnd();
@@ -179,10 +181,25 @@ void CoordSyst() {
 }
 
 //this is the actual code for the lab
-void FluidStuff() {
+void FluidStuff(std::vector<std::vector<Vect3d>> terrain) {
 	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.001;
-	fluid.SetTIme(new_time - elapsed_time);
+	fluid.SetTime(new_time - elapsed_time);
 	elapsed_time = new_time;
+
+	std::vector<Vect3d> t;
+
+	for (int i = 0; i < terrain.size(); i++) {
+		Vect3d max = Vect3d(0,-10,0);
+		for (int j = 0; j < terrain[i].size(); j++) {
+			if (terrain[i][j].y() > max.y()) {
+				max = terrain[i][j];
+			}
+		}
+		//DrawPoint(max, Vect3d(0, 1, 1), 30);
+		t.push_back(max);
+	}
+
+	fluid.SetTerrain(t);
 
 	fluid.AdvectParticles();
 
@@ -196,6 +213,39 @@ void FluidStuff() {
 	}
 }
 
+void GeneratePerlinNoise() {
+	PerlinNoise2d noise = PerlinNoise2d();
+	for (float i = -1.0; i < 1.0; i+=0.01) {
+		for (float j = -1.0; j < 1.0; j += 0.01) {
+			float noiseVal = noise.value(i, j);
+			DrawPoint(Vect3d(i, j, 0), Vect3d(noiseVal, noiseVal, noiseVal));
+		}
+	}
+}
+
+void VisualizeVoxelPoints() {
+	PerlinNoise2d noise = PerlinNoise2d(0,16,2,2,10,10);
+	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01,0.0, 1.0,3,0.01,4.0);
+	vector<Vect3d> points = terrain.points();
+	for (int i = 0; i < points.size(); i++) {
+		DrawPoint(Vect3d(points[i].x(), points[i].y(), 0), Vect3d(points[i].z(), points[i].z(), points[i].z()));
+	}
+}
+
+vector<vector<Vect3d>> GenerateVoxelPoints() {
+	PerlinNoise2d noise = PerlinNoise2d(0, 16, 2, 2, 10, 10);
+	float zpos = 1.0f;
+	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
+	vector<vector<Vect3d>> voxelPoints = terrain.voxelPoints();
+	for (int i = 0; i < voxelPoints.size(); i++) {
+		for (int j = 0; j < voxelPoints[i].size(); j++) {
+			//DrawPoint(voxelPoints[i][j], Vect3d(zpos + voxelPoints[i][j].y(), zpos + voxelPoints[i][j].y(), zpos + voxelPoints[i][j].y()), 20);
+		}
+	}
+
+	return voxelPoints;
+}
+
 //the main rendering function
 void RenderObjects()
 {
@@ -204,7 +254,11 @@ void RenderObjects()
 	glMatrixMode(GL_MODELVIEW);
 	trackball.Set3DViewCamera();
 	//call the student's code from here
-	//FluidStuff();
+	//Lab01();
+	//GeneratePerlinNoise();
+	//VisualizeVoxelPoints();
+	std::vector<std::vector<Vect3d>> terrain = GenerateVoxelPoints();
+	FluidStuff(terrain);
 }
 
 //Add here if you want to control some global behavior
@@ -257,7 +311,7 @@ void Idle(void)
   gluPerspective(40,(GLfloat)wWindow/(GLfloat)hWindow,0.01,100); //set the camera
   glMatrixMode(GL_MODELVIEW); //set the scene
   glLoadIdentity();
-  gluLookAt(0,10,10,0,0,0,0,1,0); //set where the camera is looking at and from. 
+  gluLookAt(0,10,20,0,0,0,0,1,0); //set where the camera is looking at and from. 
   static GLfloat angle=0;
   angle+=angleIncrement;
   if (angle>=360.f) angle=0.f;

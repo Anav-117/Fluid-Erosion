@@ -8,7 +8,9 @@ class Particle {
 	Vect3d velocity;
 	float mass;
 	float density;
+	float pressureForce;
 	Vect3d pressure;
+	float viscosityForce;
 	Vect3d viscosity;
 	Vect3d externalForce;
 	Vect3d color;
@@ -43,6 +45,14 @@ public:
 
 	void SetDensity(float d) {  density = d; }
 
+	float GetPressureForce() { return pressureForce; }
+
+	void SetPressureForce(float p) { pressureForce = p; }
+
+	float GetViscosityForce() { return viscosityForce; }
+
+	void SetViscosityForce(float v) { viscosityForce = v; }
+
 	Vect3d GetPressure() { return pressure; }
 
 	void SetPressure(Vect3d p) { pressure = p; }
@@ -58,5 +68,7 @@ public:
 	std::vector<Particle> GetKernel() { return Kernel; }
 
 	void SetKernel(std::vector<Particle> k) { Kernel = k; }
+
+	void ClearKernel() { Kernel.clear(); }
 };
 
