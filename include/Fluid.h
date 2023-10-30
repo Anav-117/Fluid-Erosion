@@ -5,14 +5,14 @@
 
 class Fluid {
 public:
-	Fluid(int particleMatrixSize[], bool randomize, float startPositionOffset[], float scatter, int mass, Vect3d force);
+	Fluid(int particleMatrixSize[]);
 	std::vector<std::vector<std::vector<Particle>>> GetParticles() { return fluidParticles; }
 	void GenerateKernel(Particle* part);
 	void UpdateDenstiy(Particle* part);
 	void UpdatePressure(Particle* part);
 	void UpdateViscosity(Particle* part);
-	void UpdateExternalForce(Particle* part, Vect3d force);
-	void AdvectParticles(Vect3d force);
+	void UpdateExternalForce(Particle* part);
+	void AdvectParticles();
 	void SetTime(float time);
 	void SetTerrain(std::vector<Vect3d> t);
 	Vect3d Reflect(Vect3d I, Vect3d N);

@@ -34,8 +34,6 @@
 #pragma warning(disable : 4996)
 #pragma comment(lib, "freeglut.lib")
 
-#define g 9.8
-
 using namespace std;
 
 //some trackball variables -> used in mouse feedback
@@ -43,25 +41,21 @@ TrackBallC trackball;
 bool mouseLeft, mouseMid, mouseRight;
 
 
-GLuint points=0;  //number of points to display the object
-int steps=20;     //# of subdivisions
-bool needRedisplay=false;
-GLfloat  sign=+1; //diretcion of rotation
-const GLfloat defaultIncrement=0.7f; //speed of rotation
-GLfloat  angleIncrement=defaultIncrement;
-
-Vect3d wind = Vect3d(0, 0, 0);
-Vect3d gforce = Vect3d(0, -g, 0);
+GLuint points = 0;  //number of points to display the object
+int steps = 20;     //# of subdivisions
+bool needRedisplay = false;
+GLfloat  sign = +1; //diretcion of rotation
+const GLfloat defaultIncrement = 0.7f; //speed of rotation
+GLfloat  angleIncrement = defaultIncrement;
 
 int particleMatrixSize[3] = { 5,5,5 };
-float startPositionOffset[3] = { 0,0,0 };
-Fluid fluid(particleMatrixSize, true, startPositionOffset, 0.2, 6500, gforce+wind);
+Fluid fluid(particleMatrixSize);
 
 vector <Vect3d> v;   //all the points will be stored here
 
 //window size
-GLint wWindow=1200;
-GLint hWindow=800;
+GLint wWindow = 1200;
+GLint hWindow = 800;
 
 //this defines what will be rendered
 //see Key() how is it controlled
@@ -75,7 +69,7 @@ float elapsed_time;
 Some OpenGL-related functions DO NOT TOUCH
 **********************************/
 //displays the text message in the GL window
-void GLMessage(char *message)
+void GLMessage(char* message)
 {
 	static int i;
 	glMatrixMode(GL_PROJECTION);
@@ -87,7 +81,7 @@ void GLMessage(char *message)
 	glLoadIdentity();
 	glColor3ub(0, 0, 255);
 	glRasterPos2i(10, 10);
-	for (i = 0; i<(int)strlen(message); i++) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, message[i]);
+	for (i = 0; i < (int)strlen(message); i++) glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, message[i]);
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -109,8 +103,8 @@ void DrawLine(Vect3d a, Vect3d b, Vect3d color) {
 
 	glColor3fv(color);
 	glBegin(GL_LINES);
-		glVertex3fv(a);
-		glVertex3fv(b);
+	glVertex3fv(a);
+	glVertex3fv(b);
 	glEnd();
 }
 
@@ -120,7 +114,7 @@ void DrawPoint(Vect3d a, Vect3d color, int pointSize = 5) {
 	glColor3fv(color);
 	glPointSize(pointSize);
 	glBegin(GL_POINTS);
-	 glVertex3fv(a);
+	glVertex3fv(a);
 	glEnd();
 }
 
@@ -134,16 +128,16 @@ inline Vect3d P(GLfloat t)
 	const float rad = 0.2f;
 	const float height = 1.f;
 	const float rot = 5.f;
-	return Vect3d(rad*(float)sin(rot*M_PI*t),height*t,rad*(float)cos(rot*M_PI*t)); //spiral with radius rad, height, and rotations rot
+	return Vect3d(rad * (float)sin(rot * M_PI * t), height * t, rad * (float)cos(rot * M_PI * t)); //spiral with radius rad, height, and rotations rot
 }
 
 //This fills the <vector> *a with data. 
-void CreateCurve(vector <Vect3d> *a, int n)
+void CreateCurve(vector <Vect3d>* a, int n)
 {
-	GLfloat step=1.f/n;
-	for (int i=0;i<n;i++)
+	GLfloat step = 1.f / n;
+	for (int i = 0; i < n; i++)
 	{
-			a->push_back(P(i*step));
+		a->push_back(P(i * step));
 	}
 }
 
@@ -151,20 +145,20 @@ void CreateCurve(vector <Vect3d> *a, int n)
 void InitArray(int n)
 {
 	v.clear();
-	CreateCurve(&v,n); 
+	CreateCurve(&v, n);
 }
 
 //returns random number from <-1,1>
-inline float random11() { 
-	return 2.f*rand() / (float)RAND_MAX - 1.f;
+inline float random11() {
+	return 2.f * rand() / (float)RAND_MAX - 1.f;
 }
 
 //randomizes an existing curve by adding random number to each coordinate
-void Randomize(vector <Vect3d> *a) {
+void Randomize(vector <Vect3d>* a) {
 	const float intensity = 0.01f;
 	for (unsigned int i = 0; i < a->size(); i++) {
 		Vect3d r(random11(), random11(), random11());
-		a->at(i) = a->at(i) + intensity*r;
+		a->at(i) = a->at(i) + intensity * r;
 	}
 }
 
@@ -207,10 +201,10 @@ void FluidStuff(std::vector<Vect3d> t) {
 
 	fluid.SetTerrain(t);
 
-	fluid.AdvectParticles(gforce+wind);
+	fluid.AdvectParticles();
 
 	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
-	
+
 	for (int i = 0; i < fp.size(); i++) {
 		for (int j = 0; j < fp[i].size(); j++) {
 			for (int k = 0; k < fp[i][j].size(); k++) {
@@ -232,8 +226,8 @@ void GeneratePerlinNoise() {
 }
 
 void VisualizeVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d(0,32,2,2,10,10);
-	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01,0.0, 1.0,3,0.01,4.0);
+	PerlinNoise2d noise = PerlinNoise2d(0, 32, 2, 2, 10, 10);
+	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01, 0.0, 1.0, 3, 0.01, 4.0);
 	vector<Vect3d> points = terrain.points();
 	for (int i = 0; i < points.size(); i++) {
 		DrawPoint(Vect3d(points[i].x(), points[i].y(), 0), Vect3d(points[i].z(), points[i].z(), points[i].z()));
@@ -258,7 +252,7 @@ vector<Vect3d> GenerateVoxelPoints() {
 //the main rendering function
 void RenderObjects()
 {
-	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//set camera
 	glMatrixMode(GL_MODELVIEW);
 	trackball.Set3DViewCamera();
@@ -289,7 +283,7 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	case 's': {sign = -sign; break; }
 	case '-': {
 		steps--;
-		if (steps<1) steps = 1;
+		if (steps < 1) steps = 1;
 		InitArray(steps);
 		break;
 	}
@@ -313,21 +307,21 @@ OpenGL code. Do not touch.
 ******************/
 void Idle(void)
 {
-  glClearColor(0.5f,0.5f,0.5f,1); //background color
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  GLMessage("Lab 2 - CS 590CGS");
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(40,(GLfloat)wWindow/(GLfloat)hWindow,0.01,100); //set the camera
-  glMatrixMode(GL_MODELVIEW); //set the scene
-  glLoadIdentity();
-  gluLookAt(0,10,20,0,0,0,0,1,0); //set where the camera is looking at and from. 
-  static GLfloat angle=0;
-  angle+=angleIncrement;
-  if (angle>=360.f) angle=0.f;
-  glRotatef(sign*angle,0,1,0);
-  RenderObjects();
-  glutSwapBuffers();  
+	glClearColor(0.5f, 0.5f, 0.5f, 1); //background color
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GLMessage("Lab 2 - CS 590CGS");
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(40, (GLfloat)wWindow / (GLfloat)hWindow, 0.01, 100); //set the camera
+	glMatrixMode(GL_MODELVIEW); //set the scene
+	glLoadIdentity();
+	gluLookAt(0, 10, 20, 0, 0, 0, 0, 1, 0); //set where the camera is looking at and from. 
+	static GLfloat angle = 0;
+	angle += angleIncrement;
+	if (angle >= 360.f) angle = 0.f;
+	glRotatef(sign * angle, 0, 1, 0);
+	RenderObjects();
+	glutSwapBuffers();
 }
 
 void Display(void)
@@ -376,31 +370,31 @@ void MouseMotion(int x, int y) {
 }
 
 
-int main(int argc, char **argv)
-{ 
+int main(int argc, char** argv)
+{
 	//fluid = Fluid(particleMatrixSize);
 
-  glutInitDisplayString("stencil>=2 rgb double depth samples");
-  glutInit(&argc, argv);
-  glutInitWindowSize(wWindow,hWindow);
-  glutInitWindowPosition(500,100);
-  glutCreateWindow("Surface of Revolution");
+	glutInitDisplayString("stencil>=2 rgb double depth samples");
+	glutInit(&argc, argv);
+	glutInitWindowSize(wWindow, hWindow);
+	glutInitWindowPosition(500, 100);
+	glutCreateWindow("Surface of Revolution");
 
-  elapsed_time = 0;
+	elapsed_time = 0;
 
-  //GLenum err = glewInit();
-  // if (GLEW_OK != err){
-  // fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-  //}
-  glutDisplayFunc(Display);
-  glutIdleFunc(Idle);
-  glutReshapeFunc(Reshape);
-  glutKeyboardFunc(Kbd); //+ and -
-  glutSpecialUpFunc(NULL); 
-  glutSpecialFunc(NULL);
-  glutMouseFunc(Mouse);
-  glutMotionFunc(MouseMotion);
-  InitArray(steps);
-  glutMainLoop();
-  return 0;        
+	//GLenum err = glewInit();
+	// if (GLEW_OK != err){
+	// fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	//}
+	glutDisplayFunc(Display);
+	glutIdleFunc(Idle);
+	glutReshapeFunc(Reshape);
+	glutKeyboardFunc(Kbd); //+ and -
+	glutSpecialUpFunc(NULL);
+	glutSpecialFunc(NULL);
+	glutMouseFunc(Mouse);
+	glutMotionFunc(MouseMotion);
+	InitArray(steps);
+	glutMainLoop();
+	return 0;
 }

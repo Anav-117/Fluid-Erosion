@@ -17,10 +17,10 @@ void Fluid::SetTime(float time) {
 	this->time = time;
 }
 
-Fluid::Fluid(int particleMatrixSize[], bool randomize, float startPositionOffset[], float scatter, int mass, Vect3d force) {
+Fluid::Fluid(int particleMatrixSize[]) {
 	time = 0;
 	for (int i = 0; i < particleMatrixSize[0]; i++) {
-		std::vector < std::vector<Particle>> vec2d;
+		std::vector<std::vector<Particle>> vec2D;
 		for (int j = 0; j < particleMatrixSize[1]; j++) {
 			std::vector<Particle> vec;
 			for (int k = 0; k < particleMatrixSize[2]; k++) {
@@ -37,22 +37,16 @@ Fluid::Fluid(int particleMatrixSize[], bool randomize, float startPositionOffset
 
 				float x_off = (3.0 / (float)particleMatrixSize[0]);
 				float y_off = (3.0 / (float)particleMatrixSize[1]);
-				Particle part;
-				if (randomize) {
-					part = Particle(Vect3d(
-						rand() % 100 * 0.01 * scatter + startPositionOffset[0],
-						rand() % 100 * 0.01 * scatter + startPositionOffset[1],
-						rand() % 100 * 0.01 * scatter + startPositionOffset[2]));
-				}
-				else {
-					part = Particle(Vect3d(i * scatter + startPositionOffset[0], j * scatter + startPositionOffset[1], k * scatter + startPositionOffset[2]));// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
-				}
+
+				Particle part(Vect3d(
+					rand() % 100 * 0.001,
+					rand() % 100 * 0.001,
+					rand() % 100 * 0.001));// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
 				//Vect3d pos = part.GetPos();
 				//std::cout << pos.x() << " : " << pos.y() << " : " << pos.z() << "\n";
-				part.SetMass(mass);
+				part.SetMass(6500);
 				restDensity = 1000;
 				part.SetVelocity(Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
-				//part.SetVelocity(Vect3d(0,0,0));
 				part.SetPressure(Vect3d(0, 0, 0));
 				part.SetViscosity(Vect3d(0, 0, 0));
 				stiffness = 0.02;
@@ -60,9 +54,9 @@ Fluid::Fluid(int particleMatrixSize[], bool randomize, float startPositionOffset
 				bounceDamping = 0.6f;
 				vec.push_back(part);
 			}
-			vec2d.push_back(vec);
+			vec2D.push_back(vec);
 		}
-		fluidParticles.push_back(vec2d);
+		fluidParticles.push_back(vec2D);
 	}
 
 	for (int i = 0; i < fluidParticles.size(); i++) {
@@ -72,7 +66,7 @@ Fluid::Fluid(int particleMatrixSize[], bool randomize, float startPositionOffset
 				UpdateDenstiy(&fluidParticles[i][j][k]);
 				UpdatePressure(&fluidParticles[i][j][k]);
 				UpdateViscosity(&fluidParticles[i][j][k]);
-				UpdateExternalForce(&fluidParticles[i][j][k], force);
+				UpdateExternalForce(&fluidParticles[i][j][k]);
 			}
 		}
 	}
@@ -114,10 +108,10 @@ void Fluid::UpdateDenstiy(Particle* part) {
 void Fluid::UpdatePressure(Particle* part) {
 	Vect3d pressure = Vect3d(0, 0, 0);
 	float pressureForce = 0;
-	
+
 	for (int i = 0; i < Kernel.size(); i++) {
-		pressureForce = Kernel[i].GetMass() * 
-			((part->GetPressureForce() + Kernel[i].GetPressureForce()) / (2.0f * Kernel[i].GetPressureForce())) * 
+		pressureForce = Kernel[i].GetMass() *
+			((part->GetPressureForce() + Kernel[i].GetPressureForce()) / (2.0f * Kernel[i].GetPressureForce())) *
 			KernelScalePressure * pow((kernelRadius - (part->GetPos() - Kernel[i].GetPos()).Length()), 2);
 		pressure -= pressureForce * (part->GetPos() - Kernel[i].GetPos()).GetNormalized();
 	}
@@ -132,9 +126,9 @@ void Fluid::UpdateViscosity(Particle* part) {
 	float viscosityForce = 0;
 
 	for (int i = 0; i < Kernel.size(); i++) {
-		viscosity = Kernel[i].GetMass() * 
-			((Kernel[i].GetVelocity() - part->GetVelocity()) / Kernel[i].GetDensity() * 
-				KernelScaleViscous * 
+		viscosity = Kernel[i].GetMass() *
+			((Kernel[i].GetVelocity() - part->GetVelocity()) / Kernel[i].GetDensity() *
+				KernelScaleViscous *
 				(kernelRadius - (part->GetPos() - Kernel[i].GetPos()).Length()));
 	}
 
@@ -143,7 +137,8 @@ void Fluid::UpdateViscosity(Particle* part) {
 	part->SetViscosity(viscosity);
 }
 
-void Fluid::UpdateExternalForce(Particle* part, Vect3d force) {
+void Fluid::UpdateExternalForce(Particle* part) {
+	Vect3d force = Vect3d(0, -g, 0);
 
 	part->SetExternalForce(force);
 }
@@ -155,13 +150,12 @@ Vect3d Fluid::Reflect(Vect3d I, Vect3d N) {
 	return v_parallel - v_perp;
 }
 
-void Fluid::AdvectParticles(Vect3d force) {
+void Fluid::AdvectParticles() {
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
 			for (int k = 0; k < fluidParticles[i][j].size(); k++) {
 				Vect3d accel = fluidParticles[i][j][k].GetExternalForce() + fluidParticles[i][j][k].GetPressure() / fluidParticles[i][j][k].GetDensity() + fluidParticles[i][j][k].GetViscosity() / fluidParticles[i][j][k].GetDensity();
-				//Vect3d accel = Force / fluidParticles[i][j][k].GetMass();
-				//Vect3d accel = fluidParticles[i][j][k].GetExternalForce();
+				//Vect3d accel = Force / fluidParticles[i][j].GetMass();
 				Vect3d velocity = (fluidParticles[i][j][k].GetVelocity() + accel * time / 2.0f);
 				Vect3d position = fluidParticles[i][j][k].GetPos() + velocity * time;
 				velocity = (fluidParticles[i][j][k].GetVelocity() + accel * time / 2.0f);
@@ -217,7 +211,7 @@ void Fluid::AdvectParticles(Vect3d force) {
 				UpdateDenstiy(&fluidParticles[i][j][k]);
 				UpdatePressure(&fluidParticles[i][j][k]);
 				UpdateViscosity(&fluidParticles[i][j][k]);
-				UpdateExternalForce(&fluidParticles[i][j][k], force);
+				UpdateExternalForce(&fluidParticles[i][j][k]);
 			}
 		}
 	}
