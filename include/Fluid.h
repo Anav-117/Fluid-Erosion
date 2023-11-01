@@ -14,8 +14,9 @@ public:
 	void UpdateExternalForce(Particle* part);
 	void AdvectParticles();
 	void SetTime(float time);
-	void SetTerrain(std::vector<Vect3d> t);
+	void SetTerrain(std::vector<std::vector<Vect3d>> t);
 	Vect3d Reflect(Vect3d I, Vect3d N);
+	Vect3d TerrainNormal(Vect3d T);
 
 private:
 	std::vector <std::vector<std::vector<Particle>>> fluidParticles;
@@ -30,5 +31,5 @@ private:
 	double stiffness;
 	double restDensity;
 	double bounceDamping;
-	std::vector<Vect3d> terrain;
+	std::vector<std::vector<Vect3d>> terrain;
 };

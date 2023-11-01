@@ -8,7 +8,7 @@
 #define g 9.8
 #define pi 3.14159265359
 
-void Fluid::SetTerrain(std::vector<Vect3d> t) {
+void Fluid::SetTerrain(std::vector<std::vector<Vect3d>> t) {
 	terrain = t;
 	//std::cout << terrain.size()<<"\n";
 }
@@ -150,6 +150,13 @@ Vect3d Fluid::Reflect(Vect3d I, Vect3d N) {
 	return v_parallel - v_perp;
 }
 
+Vect3d Fluid::TerrainNormal(Vect3d T) {
+	for (int t = 0; t < terrain.size(); t++) {
+
+	}
+	return T;
+}
+
 void Fluid::AdvectParticles() {
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
@@ -162,10 +169,14 @@ void Fluid::AdvectParticles() {
 
 				float closest = 10000;
 				float closestHeight = 0;
-				for (int t = 0; t < terrain.size(); t++) {
-					if ((terrain[t] - position).Length() < closest) {
-						closest = (terrain[t] - position).Length();
-						closestHeight = terrain[t].y();
+				Vect3d closestPoint;
+				for (int s = 0; s < terrain.size(); s++) {
+					for (int t = 0; t < terrain[s].size(); t++) {
+						if ((terrain[s][t] - position).Length() < closest) {
+							closest = (terrain[s][t] - position).Length();
+							closestHeight = terrain[s][t].y();
+							closestPoint = terrain[s][t];
+						}
 					}
 				}
 
@@ -194,6 +205,8 @@ void Fluid::AdvectParticles() {
 					position.v[2] = 1.5f;
 					velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
 				}
+
+				//closestPointId
 
 				fluidParticles[i][j][k].SetVelocity(velocity);
 

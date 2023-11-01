@@ -15,8 +15,8 @@ TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float cen
 	this->persistance = persistance;
 	this->lacunarity = lacunarity;
 	this->noise = noise;
-	this->generatedPoints = std::vector<Vect3d>();
-	this->generatedVoxelPoints = std::vector<std::vector<Vect3d>>();
+	this->generatedPoints = std::vector<std::vector<Vect3d>>();
+	this->generatedVoxelPoints = std::vector<std::vector<std::vector<Vect3d>>>();
 	this->GeneratePoints();
 	this->GenerateVoxelPoints();
 }
@@ -24,6 +24,7 @@ TerrainGenerator::TerrainGenerator(PerlinNoise2d noise, float centerX, float cen
 void TerrainGenerator::GeneratePoints() {
 	this->generatedPoints.clear();
 	for (float z = 0.0; z < this->width; z+=this->pointSize) {
+		std::vector<Vect3d> row;
 		for (float x = 0.0; x < this->length; x+= this->pointSize) {
 			float amplitude = 1.0;
 			float frequency = 1.0;
@@ -39,36 +40,41 @@ void TerrainGenerator::GeneratePoints() {
 				amplitude *= this->persistance;
 				frequency *= this->lacunarity;
 			}
-			this->generatedPoints.push_back(Vect3d(this->centerX + x - this->length / 2, this->Y + noiseHeight * (maxHeight - minHeight) + minHeight, this->centerZ + z - this->width / 2));
+			row.push_back(Vect3d(this->centerX + x - this->length / 2, this->Y + noiseHeight * (maxHeight - minHeight) + minHeight, this->centerZ + z - this->width / 2));
 		}
+		this->generatedPoints.push_back(row);
 	}
 }
 
 void TerrainGenerator::GenerateVoxelPoints() {
 	this->generatedVoxelPoints.clear();
-	for (int j = 0; j < this->generatedPoints.size(); j++) {
-		Vect3d curPoint = this->generatedPoints[j];
-		std::vector<Vect3d> vp;
-		for (float k = this->Y; k < curPoint.y(); k+= this->pointSize) {
-			vp.push_back(Vect3d(curPoint.x(), k, curPoint.z()));
+	for (int i = 0; i < this->generatedPoints.size(); i++) {
+		std::vector<std::vector<Vect3d>> row;
+		for (int j = 0; j < this->generatedPoints[i].size(); j++) {
+			Vect3d curPoint = this->generatedPoints[i][j];
+			std::vector<Vect3d> vp;
+			for (float k = this->Y; k < curPoint.y(); k += this->pointSize) {
+				vp.push_back(Vect3d(curPoint.x(), k, curPoint.z()));
+			}
+			vp.push_back(curPoint);
+			row.push_back(vp);
 		}
-		this->generatedVoxelPoints.push_back(vp);
+		this->generatedVoxelPoints.push_back(row);
 	}
 }
 
-std::vector<Vect3d> TerrainGenerator::points(bool regenerate) {
+std::vector<std::vector<Vect3d>> TerrainGenerator::points(bool regenerate) {
 	if (regenerate) {
 		this->GeneratePoints();
 	}
 	return this->generatedPoints;
 }
 
-std::vector<std::vector<Vect3d>> TerrainGenerator::voxelPoints(bool regenerate) {
+std::vector<std::vector<std::vector<Vect3d>>> TerrainGenerator::voxelPoints(bool regenerate) {
 	if (regenerate) {
 		this->GeneratePoints();
 		this->GenerateVoxelPoints();
 	}
 	return this->generatedVoxelPoints;
 }
-
 

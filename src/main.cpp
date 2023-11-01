@@ -181,7 +181,7 @@ void CoordSyst() {
 }
 
 //this is the actual code for the lab
-void FluidStuff(std::vector<Vect3d> t) {
+void FluidStuff(std::vector<std::vector<Vect3d>> t) {
 	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
 	fluid.SetTime(new_time - elapsed_time);
 	elapsed_time = new_time;
@@ -228,22 +228,34 @@ void GeneratePerlinNoise() {
 void VisualizeVoxelPoints() {
 	PerlinNoise2d noise = PerlinNoise2d(0, 32, 2, 2, 10, 10);
 	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01, 0.0, 1.0, 3, 0.01, 4.0);
-	vector<Vect3d> points = terrain.points();
+	std::vector<std::vector<Vect3d>> points = terrain.points();
 	for (int i = 0; i < points.size(); i++) {
-		DrawPoint(Vect3d(points[i].x(), points[i].y(), 0), Vect3d(points[i].z(), points[i].z(), points[i].z()));
+		for (int j = 0; j < points[i].size(); j++) {
+			DrawPoint(Vect3d(points[i][j].x(), points[i][j].y(), 0), Vect3d(points[i][j].z(), points[i][j].z(), points[i][j].z()));
+		}
 	}
 }
 
-vector<Vect3d> GenerateVoxelPoints() {
+std::vector<std::vector<Vect3d>> GenerateVoxelPoints() {
 	PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 	float zpos = 1.0f;
 	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
-	vector<vector<Vect3d>> voxelPoints = terrain.voxelPoints();
+	std::vector<std::vector<std::vector<Vect3d>>> voxelPoints = terrain.voxelPoints();
 	for (int i = 0; i < voxelPoints.size(); i++) {
 		for (int j = 0; j < voxelPoints[i].size(); j++) {
-			DrawPoint(voxelPoints[i][j], Vect3d((zpos + voxelPoints[i][j].y()) * .95, (zpos + voxelPoints[i][j].y()) * .5, (zpos + voxelPoints[i][j].y()) * 0.05), 25);
+			for (int k = 0; k < voxelPoints[i][j].size(); k++) {
+				DrawPoint(voxelPoints[i][j][k], Vect3d((zpos + voxelPoints[i][j][k].y()) * .95, (zpos + voxelPoints[i][j][k].y()) * .5, (zpos + voxelPoints[i][j][k].y()) * 0.05), 25);
+			}
 		}
 	}
+
+	/*
+	std::vector<std::vector<Vect3d>> points = terrain.points();
+	for (int i = 0; i < points.size(); i++) {
+		for (int j = 0; j < points.size(); j++) {
+			DrawPoint(points[i][j], Vect3d(1, 1, 1));
+		}
+	}*/
 
 	return terrain.points();
 }
@@ -261,7 +273,7 @@ void RenderObjects()
 	//GeneratePerlinNoise();
 	//VisualizeVoxelPoints();
 	//GenerateVoxelPoints();
-	std::vector<Vect3d> terrain = GenerateVoxelPoints();
+	std::vector<std::vector<Vect3d>> terrain = GenerateVoxelPoints();
 	FluidStuff(terrain);
 }
 
