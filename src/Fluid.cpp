@@ -51,7 +51,7 @@ Fluid::Fluid(int particleMatrixSize[]) {
 				part.SetViscosity(Vect3d(0, 0, 0));
 				stiffness = 0.02;
 				viscosIndex = 0.25;
-				bounceDamping = 0.6f;
+				bounceDamping = 0.0f;
 				vec.push_back(part);
 			}
 			vec2D.push_back(vec);
@@ -175,7 +175,8 @@ void Fluid::AdvectParticles() {
 
 				if (position.y() <= closestHeight) {
 					position.v[1] = closestHeight;
-					velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
+					//velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
+					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
 				}
 
 				if (position.y() <= -1.5f) {

@@ -4,6 +4,7 @@
 #include <vector>
 
 class Particle {
+public:
 	Vect3d position;
 	Vect3d velocity;
 	float mass;
@@ -16,7 +17,6 @@ class Particle {
 	Vect3d color;
 	std::vector<Particle> Kernel;
 
-public:
 	Particle() {
 		position = Vect3d(0, 0, 0);
 	}

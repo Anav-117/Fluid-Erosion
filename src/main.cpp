@@ -68,6 +68,7 @@ bool tangentsFlag = false;
 bool pointsFlag = false;
 bool curveFlag = true;
 bool debugMode = false;
+bool showNormals = false;
 int framerate = 1;
 
 float elapsed_time;
@@ -222,7 +223,15 @@ void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 		for (int j = 0; j < fp[i].size(); j++) {
 			for (int k = 0; k < fp[i][j].size(); k++) {
 				Vect3d pos = fp[i][j][k].GetPos();
-				DrawPoint(pos, Vect3d(0, 0, 1), 10);
+				if (debugMode) {
+					DrawPoint(pos, Vect3d(0, 0, 1));
+					if (showNormals) {
+						DrawLine(pos, pos + 0.1 * fp[i][j][k].GetVelocity(), Vect3d(0, 1, 1));
+					}
+				}
+				else {
+					DrawPoint(pos, Vect3d(0, 0, 1), 10);
+				}
 			}
 		}
 	}
@@ -290,7 +299,9 @@ void VisualizeVoxelPoints() {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
-				DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 1, 1));
+				if (showNormals) {
+					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 0, 0));
+				}
 			}
 		}
 	}
@@ -333,7 +344,12 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	case 't': tangentsFlag = !tangentsFlag; break;
 	case 'p': pointsFlag = !pointsFlag; break;
 	case 'c': curveFlag = !curveFlag; break;
-	case 'd': debugMode = !debugMode; break; 
+	case 'd': {
+		debugMode = !debugMode; 
+		showNormals = debugMode;
+		break;
+	}
+	case 'n': showNormals = !showNormals; break;
 	case 'f': {
 		framerate = framerate * 10;
 		if (framerate > 100) {
