@@ -22,7 +22,7 @@ public:
 	Vect3d TerrainXTangent(TerrainPoint T);
 	Vect3d TerrainNormal(TerrainPoint T);
 
-private:
+
 	std::vector <std::vector<std::vector<Particle>>> fluidParticles;
 	double ParticleSize;
 	double kernelRadius;

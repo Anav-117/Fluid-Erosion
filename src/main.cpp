@@ -68,8 +68,10 @@ bool tangentsFlag = false;
 bool pointsFlag = false;
 bool curveFlag = true;
 bool debugMode = false;
+int framerate = 1;
 
 float elapsed_time;
+int iterations;
 
 /*********************************
 Some OpenGL-related functions DO NOT TOUCH
@@ -188,9 +190,6 @@ void CoordSyst() {
 
 //this is the actual code for the lab
 void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
-	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
-	fluid.SetTime(new_time - elapsed_time);
-	elapsed_time = new_time;
 
 	//std::vector<Vect3d> t;
 
@@ -207,7 +206,15 @@ void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 
 	fluid.SetTerrain(t);
 
-	fluid.AdvectParticles();
+	if (iterations >= framerate) {
+		float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
+		fluid.SetTime(new_time - elapsed_time);
+
+		fluid.AdvectParticles();
+
+		elapsed_time = new_time;
+		iterations = 0;
+	}
 
 	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
 
@@ -219,6 +226,8 @@ void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 			}
 		}
 	}
+
+	iterations++;
 }
 
 Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
@@ -281,7 +290,7 @@ void VisualizeVoxelPoints() {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
-				DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(0, 0, 0));
+				DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 1, 1));
 			}
 		}
 	}
@@ -324,7 +333,14 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	case 't': tangentsFlag = !tangentsFlag; break;
 	case 'p': pointsFlag = !pointsFlag; break;
 	case 'c': curveFlag = !curveFlag; break;
-	case 'd': debugMode = !debugMode; break;
+	case 'd': debugMode = !debugMode; break; 
+	case 'f': {
+		framerate = framerate * 10;
+		if (framerate > 100) {
+			framerate = 1;
+		}
+		break;
+	}
 	case 32: {
 		if (angleIncrement == 0) angleIncrement = defaultIncrement;
 		else angleIncrement = 0;
@@ -432,6 +448,7 @@ int main(int argc, char** argv)
 	glutCreateWindow("Surface of Revolution");
 
 	elapsed_time = 0;
+	iterations = 0;
 
 	//GLenum err = glewInit();
 	// if (GLEW_OK != err){

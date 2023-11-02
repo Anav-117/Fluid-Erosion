@@ -2,26 +2,26 @@
   main.cpp
 C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(56,99): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(56,80): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(121,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(191,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(214,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(215,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(216,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(230,11): warning C4018: '>=': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(242,11): warning C4018: '>=': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(257,39): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(258,42): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(272,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(273,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(274,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(275,172): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(275,129): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(275,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(123,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(210,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(221,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(222,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(223,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(239,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(251,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(266,39): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(267,42): warning C4305: '+=': truncation from 'double' to 'float'
 C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(281,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(282,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(284,51): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(291,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(292,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(283,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(284,172): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(284,129): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(284,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(290,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(291,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(293,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(300,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\amycm\Documents\University\Fluid-Erosion\src\main.cpp(301,21): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
   Skipping... (no relevant changes detected)
   PerlinNoise2d.cpp
