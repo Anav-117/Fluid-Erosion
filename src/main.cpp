@@ -51,6 +51,11 @@ GLfloat  angleIncrement = defaultIncrement;
 int particleMatrixSize[3] = { 5,5,5 };
 Fluid fluid(particleMatrixSize);
 
+PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
+float zpos = 1.0f;
+TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
+vector<vector<TerrainPoint>> terrain = terrainG.points();
+
 vector <Vect3d> v;   //all the points will be stored here
 
 //window size
@@ -62,6 +67,7 @@ GLint hWindow = 800;
 bool tangentsFlag = false;
 bool pointsFlag = false;
 bool curveFlag = true;
+bool debugMode = false;
 
 float elapsed_time;
 
@@ -181,7 +187,7 @@ void CoordSyst() {
 }
 
 //this is the actual code for the lab
-void FluidStuff(std::vector<std::vector<Vect3d>> t) {
+void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
 	fluid.SetTime(new_time - elapsed_time);
 	elapsed_time = new_time;
@@ -215,6 +221,37 @@ void FluidStuff(std::vector<std::vector<Vect3d>> t) {
 	}
 }
 
+Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+	int imin = T.coordi - 1;
+	if (imin < 0) {
+		imin = 0;
+	}
+	int imax = T.coordi + 1;
+	if (imax >= terrain.size()) {
+		imax = terrain.size() - 1;
+	}
+	return terrain[imin][T.coordj].pt - terrain[imax][T.coordj].pt;
+}
+
+Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+	int imin = T.coordj - 1;
+	if (imin < 0) {
+		imin = 0;
+	}
+	int imax = T.coordj + 1;
+	if (imax >= terrain[T.coordi].size()) {
+		imax = terrain[T.coordi].size() - 1;
+	}
+	return terrain[T.coordi][imin].pt - terrain[T.coordi][imax].pt;
+}
+
+Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+	Vect3d tanz = TerrainZTangent(T, terrain);
+	Vect3d tanx = TerrainXTangent(T, terrain);
+	Vect3d normal = tanz.Cross(tanx).GetNormalized();
+	return normal;
+}
+
 void GeneratePerlinNoise() {
 	PerlinNoise2d noise = PerlinNoise2d();
 	for (float i = -1.0; i < 1.0; i+=0.01) {
@@ -226,40 +263,38 @@ void GeneratePerlinNoise() {
 }
 
 void VisualizeVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d(0, 32, 2, 2, 10, 10);
-	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01, 0.0, 1.0, 3, 0.01, 4.0);
-	std::vector<std::vector<Vect3d>> points = terrain.points();
-	for (int i = 0; i < points.size(); i++) {
-		for (int j = 0; j < points[i].size(); j++) {
-			DrawPoint(Vect3d(points[i][j].x(), points[i][j].y(), 0), Vect3d(points[i][j].z(), points[i][j].z(), points[i][j].z()));
-		}
-	}
-}
-
-std::vector<std::vector<Vect3d>> GenerateVoxelPoints() {
-	PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 	float zpos = 1.0f;
-	TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
-	std::vector<std::vector<std::vector<Vect3d>>> voxelPoints = terrain.voxelPoints();
-	for (int i = 0; i < voxelPoints.size(); i++) {
-		for (int j = 0; j < voxelPoints[i].size(); j++) {
-			for (int k = 0; k < voxelPoints[i][j].size(); k++) {
-				DrawPoint(voxelPoints[i][j][k], Vect3d((zpos + voxelPoints[i][j][k].y()) * .95, (zpos + voxelPoints[i][j][k].y()) * .5, (zpos + voxelPoints[i][j][k].y()) * 0.05), 25);
+	//PerlinNoise2d noise = PerlinNoise2d(0, 32, 2, 2, 10, 10);
+	//TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01, 0.0, 1.0, 3, 0.01, 4.0);
+
+	if (!debugMode) {
+		std::vector<std::vector<std::vector<TerrainPoint>>> voxelPoints = terrainG.voxelPoints();
+		for (int i = 0; i < voxelPoints.size(); i++) {
+			for (int j = 0; j < voxelPoints[i].size(); j++) {
+				for (int k = 0; k < voxelPoints[i][j].size(); k++) {
+					DrawPoint(voxelPoints[i][j][k].pt, Vect3d((zpos + voxelPoints[i][j][k].pt.y()) * .95, (zpos + voxelPoints[i][j][k].pt.y()) * .5, (zpos + voxelPoints[i][j][k].pt.y()) * 0.05), 25);
+				}
 			}
 		}
 	}
-
-	/*
-	std::vector<std::vector<Vect3d>> points = terrain.points();
-	for (int i = 0; i < points.size(); i++) {
-		for (int j = 0; j < points.size(); j++) {
-			DrawPoint(points[i][j], Vect3d(1, 1, 1));
+	else {
+		for (int i = 0; i < terrain.size(); i++) {
+			for (int j = 0; j < terrain[i].size(); j++) {
+				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
+				DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(0, 0, 0));
+			}
 		}
-	}*/
-
-	return terrain.points();
+	}
 }
 
+void SetTerrainNormals() {
+	for (int i = 0; i < terrain.size(); i++) {
+		for (int j = 0; j < terrain[i].size(); j++) {
+			//DrawPoint(points[i][j].pt, Vect3d(1, 1, 1));
+			terrain[i][j].SetNormal(TerrainNormal(terrain[i][j], terrain));
+		}
+	}
+}
 
 //the main rendering function
 void RenderObjects()
@@ -271,9 +306,11 @@ void RenderObjects()
 	//call the student's code from here
 	//Lab01();
 	//GeneratePerlinNoise();
-	//VisualizeVoxelPoints();
+	VisualizeVoxelPoints();
 	//GenerateVoxelPoints();
-	std::vector<std::vector<Vect3d>> terrain = GenerateVoxelPoints();
+	//cout<< glutGet(GLUT_ELAPSED_TIME) <<endl;
+	
+	
 	FluidStuff(terrain);
 }
 
@@ -287,6 +324,7 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	case 't': tangentsFlag = !tangentsFlag; break;
 	case 'p': pointsFlag = !pointsFlag; break;
 	case 'c': curveFlag = !curveFlag; break;
+	case 'd': debugMode = !debugMode; break;
 	case 32: {
 		if (angleIncrement == 0) angleIncrement = defaultIncrement;
 		else angleIncrement = 0;
@@ -385,6 +423,7 @@ void MouseMotion(int x, int y) {
 int main(int argc, char** argv)
 {
 	//fluid = Fluid(particleMatrixSize);
+	SetTerrainNormals();
 
 	glutInitDisplayString("stencil>=2 rgb double depth samples");
 	glutInit(&argc, argv);

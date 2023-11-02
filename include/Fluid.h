@@ -2,6 +2,7 @@
 
 #include "Particle.h"
 #include <vector>
+#include "TerrainPoint.h"
 
 class Fluid {
 public:
@@ -14,9 +15,12 @@ public:
 	void UpdateExternalForce(Particle* part);
 	void AdvectParticles();
 	void SetTime(float time);
-	void SetTerrain(std::vector<std::vector<Vect3d>> t);
+	void SetTerrain(std::vector<std::vector<TerrainPoint>> t);
+	std::vector<std::vector<TerrainPoint>> GetTerrain() { return terrain; }
 	Vect3d Reflect(Vect3d I, Vect3d N);
-	Vect3d TerrainNormal(Vect3d T);
+	Vect3d TerrainZTangent(TerrainPoint T);
+	Vect3d TerrainXTangent(TerrainPoint T);
+	Vect3d TerrainNormal(TerrainPoint T);
 
 private:
 	std::vector <std::vector<std::vector<Particle>>> fluidParticles;
@@ -31,5 +35,5 @@ private:
 	double stiffness;
 	double restDensity;
 	double bounceDamping;
-	std::vector<std::vector<Vect3d>> terrain;
+	std::vector<std::vector<TerrainPoint>> terrain;
 };
