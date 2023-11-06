@@ -150,33 +150,59 @@ Vect3d Fluid::Reflect(Vect3d I, Vect3d N) {
 	return v_parallel - v_perp;
 }
 
+Vect3d Fluid::GetFriction(TerrainPoint closestPoint, Particle fluidParticle) {
+	return fluidParticle.velocity * 0.001; // TODO: use the correct formula
+}
+
+bool Fluid::ShouldErode(TerrainPoint point, Particle fluidParticle) {
+	// TODO: use the correct formula
+	return true;
+}
+
+bool Fluid::ShouldDeposit(TerrainPoint point, Particle fluidParticle) {
+	// TODO: use the correct formula
+	return false;
+}
+
 void Fluid::AdvectParticles() {
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
 			for (int k = 0; k < fluidParticles[i][j].size(); k++) {
-				Vect3d accel = fluidParticles[i][j][k].GetExternalForce() + fluidParticles[i][j][k].GetPressure() / fluidParticles[i][j][k].GetDensity() + fluidParticles[i][j][k].GetViscosity() / fluidParticles[i][j][k].GetDensity();
+				Particle fp = fluidParticles[i][j][k];
+
+				Vect3d accel = fp.GetExternalForce() + fp.GetPressure() / fp.GetDensity() + fp.GetViscosity() / fp.GetDensity();
 				//Vect3d accel = Force / fluidParticles[i][j].GetMass();
-				Vect3d velocity = (fluidParticles[i][j][k].GetVelocity() + accel * time / 2.0f);
-				Vect3d position = fluidParticles[i][j][k].GetPos() + velocity * time;
-				velocity = (fluidParticles[i][j][k].GetVelocity() + accel * time / 2.0f);
+				Vect3d velocity = (fp.GetVelocity() + accel * time / 2.0f);
+				Vect3d position = fp.GetPos() + velocity * time;
+				velocity = (fp.GetVelocity() + accel * time / 2.0f);
 
 				float closest = 10000;
 				float closestHeight = 0;
 				TerrainPoint closestPoint;
 				for (int s = 0; s < terrain.size(); s++) {
 					for (int t = 0; t < terrain[s].size(); t++) {
-						if ((terrain[s][t].pt - position).Length() < closest) {
-							closest = (terrain[s][t].pt - position).Length();
+						float distance = (terrain[s][t].pt - position).Dot(terrain[s][t].pt - position);
+						if (distance < closest) {
+							closest = distance;
 							closestHeight = terrain[s][t].pt.y();
 							closestPoint = terrain[s][t];
+						}
+
+						// if particles are touching
+						if (distance < 0.001) {
+							if (ShouldErode(terrain[s][t], fp)) {
+								eroded.push_back(terrain[s][t]);
+								//terrain[s][t].pt -= terrain[s][t].normal * 0.1;
+							}
 						}
 					}
 				}
 
 				if (position.y() <= closestHeight) {
 					position.v[1] = closestHeight;
-					//velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
+					//velocity.v[1] = -1.0f * velocity.v[1];
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
+					velocity -= GetFriction(closestPoint, fp);
 				}
 
 				if (position.y() <= -1.5f) {
@@ -199,6 +225,7 @@ void Fluid::AdvectParticles() {
 					position.v[2] = 1.5f;
 					velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
 				}
+				
 
 				fluidParticles[i][j][k].SetVelocity(velocity);
 

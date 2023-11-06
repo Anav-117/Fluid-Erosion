@@ -18,9 +18,9 @@ public:
 	void SetTerrain(std::vector<std::vector<TerrainPoint>> t);
 	std::vector<std::vector<TerrainPoint>> GetTerrain() { return terrain; }
 	Vect3d Reflect(Vect3d I, Vect3d N);
-	Vect3d TerrainZTangent(TerrainPoint T);
-	Vect3d TerrainXTangent(TerrainPoint T);
-	Vect3d TerrainNormal(TerrainPoint T);
+	Vect3d GetFriction(TerrainPoint closestPoint, Particle fluidParticle);
+	bool ShouldErode(TerrainPoint point, Particle fluidParticle);
+	bool ShouldDeposit(TerrainPoint point, Particle fluidParticle);
 
 
 	std::vector <std::vector<std::vector<Particle>>> fluidParticles;
@@ -36,4 +36,5 @@ public:
 	double restDensity;
 	double bounceDamping;
 	std::vector<std::vector<TerrainPoint>> terrain;
+	std::vector<TerrainPoint> eroded;
 };
