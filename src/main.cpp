@@ -56,9 +56,10 @@ PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 float zpos = 1.0f;
 float maxHeight = 0.8f;
 float minHeight = 0.0f;
+float pointSize = 0.05;
 //TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
 //vector<vector<TerrainPoint>> terrain = terrainG.points();
-DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 6.0, 6.0, 0.05, minHeight, maxHeight);
+DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 4.0, 4.0, pointSize, minHeight, maxHeight);
 vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
 
 vector <Vect3d> v;   //all the points will be stored here
@@ -302,8 +303,10 @@ void VisualizeVoxelPoints() {
 
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
-				float color = (terrain[i][j].pt.y() + zpos) / (maxHeight - minHeight) * 0.3 + 0.3;
-				DrawPoint(terrain[i][j].pt, Vect3d(color * .95, color * .5, color * 0.05), 25);
+				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
+					float color = (k+zpos) / (maxHeight - minHeight) * 0.9 + 0.1;
+					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(color * .95, color * .5, color * 0.05), 25);
+				}
 			}
 		}
 	}
