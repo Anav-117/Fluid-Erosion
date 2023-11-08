@@ -56,10 +56,10 @@ PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 float zpos = 1.0f;
 float maxHeight = 0.8f;
 float minHeight = 0.0f;
-float pointSize = 0.05;
+float pointSize = 0.03;
 //TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
 //vector<vector<TerrainPoint>> terrain = terrainG.points();
-DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 4.0, 4.0, pointSize, minHeight, maxHeight);
+DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 5.0, 4.0, pointSize, minHeight, maxHeight);
 vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
 
 vector <Vect3d> v;   //all the points will be stored here
