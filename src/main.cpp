@@ -190,7 +190,7 @@ void CoordSyst() {
 }
 
 //this is the actual code for the lab
-void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
+void FluidStuff() {
 
 	//std::vector<Vect3d> t;
 
@@ -205,7 +205,7 @@ void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 	//	t.push_back(max);
 	//}
 
-	fluid.SetTerrain(t);
+	terrain = fluid.GetTerrain();
 
 	if (iterations >= framerate) {
 		float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
@@ -331,7 +331,7 @@ void RenderObjects()
 	//cout<< glutGet(GLUT_ELAPSED_TIME) <<endl;
 	
 	
-	FluidStuff(terrain);
+	FluidStuff();
 }
 
 //Add here if you want to control some global behavior
@@ -456,6 +456,7 @@ int main(int argc, char** argv)
 {
 	//fluid = Fluid(particleMatrixSize);
 	SetTerrainNormals();
+	fluid.SetTerrain(terrain);
 
 	glutInitDisplayString("stencil>=2 rgb double depth samples");
 	glutInit(&argc, argv);

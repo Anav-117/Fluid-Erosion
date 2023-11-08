@@ -1,6 +1,7 @@
 #pragma once
 
 #include "math/vect3d.h" 
+#include "TerrainPoint.h"
 #include <vector>
 
 class Particle {
@@ -16,6 +17,7 @@ public:
 	Vect3d externalForce;
 	Vect3d color;
 	std::vector<Particle> Kernel;
+	std::vector<TerrainPoint> deposit;
 
 	Particle() {
 		position = Vect3d(0, 0, 0);
@@ -70,5 +72,12 @@ public:
 	void SetKernel(std::vector<Particle> k) { Kernel = k; }
 
 	void ClearKernel() { Kernel.clear(); }
+
+	void AddErodedParticle(TerrainPoint p) { deposit.push_back(p); }
+
+	void GetDepositedParticle() {
+		if (deposit.size() > 0)
+			deposit.pop_back();
+	}
 };
 
