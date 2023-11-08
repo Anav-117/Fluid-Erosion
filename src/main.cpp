@@ -63,6 +63,7 @@ float pointSize = 0.03;
 //vector<vector<TerrainPoint>> terrain = terrainG.points();
 DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 5.0, 4.0, pointSize, minHeight, maxHeight);
 vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
+bool isDEM = true;
 
 ColorInterpolator colorInterpolator;
 
@@ -276,7 +277,10 @@ Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& t
 Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	Vect3d tanz = TerrainZTangent(T, terrain);
 	Vect3d tanx = TerrainXTangent(T, terrain);
-	Vect3d normal = tanx.Cross(tanz).GetNormalized();
+	Vect3d normal = tanz.Cross(tanx).GetNormalized();
+	if (isDEM) {
+		normal = tanx.Cross(tanz).GetNormalized();
+	}
 	return normal;
 }
 
@@ -366,7 +370,7 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	case 'c': curveFlag = !curveFlag; break;
 	case 'd': {
 		debugMode = !debugMode; 
-		showNormals = debugMode;
+		showNormals = false;
 		break;
 	}
 	case 'n': showNormals = !showNormals; break;
