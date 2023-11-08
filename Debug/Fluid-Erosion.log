@@ -1,30 +1,26 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Lab 2.vcxproj).  This can lead to incorrect clean and rebuild behavior.
 cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   main.cpp
-C:\Fluid-Erosion\src\main.cpp(59,23): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Fluid-Erosion\src\main.cpp(130,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(217,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(228,20): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(229,21): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(230,22): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(235,58): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Fluid-Erosion\src\main.cpp(254,11): warning C4018: '>=': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(266,11): warning C4018: '>=': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(281,39): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Fluid-Erosion\src\main.cpp(282,42): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Fluid-Erosion\src\main.cpp(304,21): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(305,22): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(307,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(308,109): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(308,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(308,84): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Fluid-Erosion\src\main.cpp(314,21): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(315,22): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(318,78): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Fluid-Erosion\src\main.cpp(327,20): warning C4018: '<': signed/unsigned mismatch
-C:\Fluid-Erosion\src\main.cpp(328,21): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  TerrainGenerator.cpp
-  PerlinNoise2d.cpp
+C:\Fluid-Erosion\src\main.cpp(61,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(134,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(221,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Fluid-Erosion\src\main.cpp(232,20): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(233,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(234,22): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(239,58): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(258,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(270,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(285,39): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(286,42): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(308,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(309,22): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(318,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(319,22): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(322,78): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(331,20): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(332,21): warning C4018: '<': signed/unsigned mismatch
+C:\Fluid-Erosion\src\main.cpp(477,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(478,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(479,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Fluid-Erosion\src\main.cpp(480,58): warning C4305: 'argument': truncation from 'double' to 'float'
   Fluid-Erosion.vcxproj -> C:\Fluid-Erosion\Debug\Fluid-Erosion.exe

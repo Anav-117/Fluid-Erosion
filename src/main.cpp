@@ -24,6 +24,8 @@
 #include "PerlinNoise2d.h"
 #include "TerrainGenerator.h"
 #include "DEMLoader.h"
+#include "ColorInterpolator.h"
+#include "math/vect3d.h"
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -61,6 +63,8 @@ float pointSize = 0.03;
 //vector<vector<TerrainPoint>> terrain = terrainG.points();
 DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 5.0, 4.0, pointSize, minHeight, maxHeight);
 vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
+
+ColorInterpolator colorInterpolator;
 
 vector <Vect3d> v;   //all the points will be stored here
 
@@ -304,8 +308,8 @@ void VisualizeVoxelPoints() {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
-					float color = (k+zpos) / (maxHeight - minHeight) * 0.9 + 0.1;
-					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(color * .95, color * .5, color * 0.05), 25);
+					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1);
+					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
 				}
 			}
 		}
@@ -470,6 +474,11 @@ void MouseMotion(int x, int y) {
 
 int main(int argc, char** argv)
 {
+	colorInterpolator.addColorPoint(0.0, Vect3d(0.1, 0.1, 0.1)); // Gray
+	colorInterpolator.addColorPoint(0.33, Vect3d(0.8, 0.8, 0.1)); // Yellow
+	colorInterpolator.addColorPoint(0.66, Vect3d(0.1, 0.5, 0.0)); // Dark Green
+	colorInterpolator.addColorPoint(1.0, Vect3d(0.2, .8, 0.0)); // Less Dark Green
+
 	//fluid = Fluid(particleMatrixSize);
 	SetTerrainNormals();
 	fluid.SetTerrain(terrain);
