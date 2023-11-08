@@ -182,7 +182,9 @@ void Fluid::AdvectParticles() {
 				int row, col;
 				for (int s = 0; s < terrain.size(); s++) {
 					for (int t = 0; t < terrain[s].size(); t++) {
-						float distance = (terrain[s][t].pt - position).Dot(terrain[s][t].pt - position);
+						Vect3d terrainPt = Vect3d(terrain[s][t].pt.x(), 0, terrain[s][t].pt.z());
+						Vect3d pos = Vect3d(position.x(), 0, position.z());
+						float distance = (terrainPt - pos).Dot(terrainPt - pos);
 						if (distance < closest) {
 							closest = distance;
 							closestHeight = terrain[s][t].pt.y();
@@ -207,17 +209,21 @@ void Fluid::AdvectParticles() {
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
 					velocity -= GetFriction(closestPoint, fp);
 
-					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f) {
+					int erodeProb = 1; // rand() % 10 + 1;
+
+					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f && erodeProb <=2 ) {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
 						//terrain[row].erase(terrain[row].begin() + col);
-						terrain[row][col].pt.v[1] -= 0.05f;
+						terrain[row][col].pt.v[1] -= 0.005f;
 					}
 
-					/*if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0) {
+					int depositProb = rand() % 10 + 1;
+
+					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2) {
 						fluidParticles[i][j][k].GetDepositedParticle();
 						std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
-						terrain[row][col].pt.v[1] += 0.05f;
-					}*/
+						terrain[row][col].pt.v[1] += 0.005f;
+					}
 
 				}
 
