@@ -209,7 +209,7 @@ void Fluid::AdvectParticles() {
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
 					velocity -= GetFriction(closestPoint, fp);
 
-					int erodeProb = 1; // rand() % 10 + 1;
+					int erodeProb = rand() % 10 + 1;
 
 					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f && erodeProb <=2 ) {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
@@ -221,11 +221,13 @@ void Fluid::AdvectParticles() {
 
 					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2) {
 						fluidParticles[i][j][k].GetDepositedParticle();
-						std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
+						//std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
 						terrain[row][col].pt.v[1] += 0.005f;
 					}
 
 				}
+
+				std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
 
 				if (position.y() <= -1.5f) {
 					position.v[1] = -1.5f;

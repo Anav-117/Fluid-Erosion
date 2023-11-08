@@ -3,3 +3,12 @@ Debug/
 x64/
 .vs/
 freeglut.dll
+
+*.exe
+*.ilk
+*.log
+*.pdb
+*.tlog
+*.obj
+SRTM.asc
+SRTM2.asc

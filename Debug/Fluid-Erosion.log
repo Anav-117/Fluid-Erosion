@@ -35,15 +35,15 @@ C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(169,21): warnin
 C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(170,22): warning C4018: '<': signed/unsigned mismatch
 C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(183,23): warning C4018: '<': signed/unsigned mismatch
 C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(184,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(232,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(236,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(240,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(244,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(248,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(261,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(262,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(263,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(234,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(238,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(242,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(246,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(250,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(263,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(264,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(265,22): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
   Skipping... (no relevant changes detected)
-  PerlinNoise2d.cpp
+  TerrainGenerator.cpp
   Fluid-Erosion.vcxproj -> C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\Debug\Fluid-Erosion.exe

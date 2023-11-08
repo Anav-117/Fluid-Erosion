@@ -2,6 +2,7 @@
 #include <vector>
 #include "PerlinNoise2d.h"
 
+
 float Vec2d::dot(Vec2d z) {
 	return this->x * z.x + this->y * z.y;
 }
@@ -19,6 +20,9 @@ PerlinNoise2d::PerlinNoise2d(int seed, int gridSize, int scaleX, int scaleY, int
 	for (int i = 0; i < gridSize * gridSize; i++) {
 		gradients.push_back({ (float)((rand() % 4) / 4.0 * 2.0 - 1.0), (float)((rand() % 4) / 4.0 * 2.0 - 1.0) });
 	}
+
+
+
 }
 
 float PerlinNoise2d::lerp(float a, float b, float lerpAmt) {

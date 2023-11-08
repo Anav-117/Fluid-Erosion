@@ -23,6 +23,7 @@
 #include <random>
 #include "PerlinNoise2d.h"
 #include "TerrainGenerator.h"
+#include "DEMLoader.h"
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -53,8 +54,12 @@ Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 float zpos = 1.0f;
-TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
-vector<vector<TerrainPoint>> terrain = terrainG.points();
+float maxHeight = 0.8f;
+float minHeight = 0.0f;
+//TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
+//vector<vector<TerrainPoint>> terrain = terrainG.points();
+DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 6.0, 6.0, 0.05, minHeight, maxHeight);
+vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
 
 vector <Vect3d> v;   //all the points will be stored here
 
@@ -286,12 +291,19 @@ void VisualizeVoxelPoints() {
 	//TerrainGenerator terrain = TerrainGenerator(noise, 0.0, 0.0, 0.0, 2.0, 2.0, 0.01, 0.0, 1.0, 3, 0.01, 4.0);
 
 	if (!debugMode) {
-		std::vector<std::vector<std::vector<TerrainPoint>>> voxelPoints = terrainG.voxelPoints();
-		for (int i = 0; i < voxelPoints.size(); i++) {
-			for (int j = 0; j < voxelPoints[i].size(); j++) {
-				for (int k = 0; k < voxelPoints[i][j].size(); k++) {
-					DrawPoint(voxelPoints[i][j][k].pt, Vect3d((zpos + voxelPoints[i][j][k].pt.y()) * .95, (zpos + voxelPoints[i][j][k].pt.y()) * .5, (zpos + voxelPoints[i][j][k].pt.y()) * 0.05), 25);
-				}
+		//std::vector<std::vector<std::vector<TerrainPoint>>> voxelPoints = terrainG.voxelPoints();
+		//for (int i = 0; i < voxelPoints.size(); i++) {
+		//	for (int j = 0; j < voxelPoints[i].size(); j++) {
+		//		for (int k = 0; k < voxelPoints[i][j].size(); k++) {
+		//			DrawPoint(voxelPoints[i][j][k].pt, Vect3d((zpos + voxelPoints[i][j][k].pt.y()) * .95, (zpos + voxelPoints[i][j][k].pt.y()) * .5, (zpos + voxelPoints[i][j][k].pt.y()) * 0.05), 25);
+		//		}
+		//	}
+		//}
+
+		for (int i = 0; i < terrain.size(); i++) {
+			for (int j = 0; j < terrain[i].size(); j++) {
+				float color = (terrain[i][j].pt.y() + zpos) / (maxHeight - minHeight) * 0.3 + 0.3;
+				DrawPoint(terrain[i][j].pt, Vect3d(color * .95, color * .5, color * 0.05), 25);
 			}
 		}
 	}
@@ -304,6 +316,7 @@ void VisualizeVoxelPoints() {
 				}
 			}
 		}
+
 	}
 }
 

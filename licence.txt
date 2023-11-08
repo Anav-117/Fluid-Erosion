@@ -1,0 +1,2 @@
+The data are SRTM 30m Global 1 arc second V003 from SRTM project (NASA Shuttle Radar Topography Mission).
+Available from https://www2.jpl.nasa.gov/srtm/.

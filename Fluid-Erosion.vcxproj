@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DEMLoader.cpp" />
     <ClCompile Include="src\Fluid.cpp" />
     <ClCompile Include="PerlinNoise2d.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -26,12 +27,16 @@
     <ClCompile Include="TerrainGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\DEMLoader.h" />
     <ClInclude Include="include\TerrainGenerator.h" />
     <ClInclude Include="PerlinNoise2d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Fluid.h" />
     <ClInclude Include="include\Particle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SRTM2.asc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E161AD21-A6AD-4FE3-90AA-CF6551D0D9A1}</ProjectGuid>
