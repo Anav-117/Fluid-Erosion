@@ -17,7 +17,7 @@ DEMLoader::DEMLoader(float centerX, float centerZ, float Y, float length, float 
 
 
 
-	std::ifstream demFile("SRTM2.asc");
+	std::ifstream demFile("SRTM.asc");
 	if (!demFile.is_open()) {
 		std::cerr << "Failed to open the DEM file." << std::endl;
 		return;
