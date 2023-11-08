@@ -276,7 +276,7 @@ Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& t
 Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	Vect3d tanz = TerrainZTangent(T, terrain);
 	Vect3d tanx = TerrainXTangent(T, terrain);
-	Vect3d normal = tanz.Cross(tanx).GetNormalized();
+	Vect3d normal = tanx.Cross(tanz).GetNormalized();
 	return normal;
 }
 

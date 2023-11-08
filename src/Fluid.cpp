@@ -151,7 +151,12 @@ Vect3d Fluid::Reflect(Vect3d I, Vect3d N) {
 }
 
 Vect3d Fluid::GetFriction(TerrainPoint closestPoint, Particle fluidParticle) {
-	return fluidParticle.velocity * 0.001; // TODO: use the correct formula
+	Vect3d Fg = g * Vect3d(0, 1, 0);
+	Vect3d Fn = -closestPoint.normal * Fg.Dot(-closestPoint.normal);
+	Vect3d Ff = Fg - Fn;
+	//return Ff*10;
+	return Vect3d(0, 0, 0);
+	//return -fluidParticle.velocity * 0.001; // TODO: use the correct formula
 }
 
 bool Fluid::ShouldErode(TerrainPoint point, Particle fluidParticle) {
@@ -207,7 +212,8 @@ void Fluid::AdvectParticles() {
 					position.v[1] = closestHeight + 0.05f;
 					//velocity.v[1] = -1.0f * velocity.v[1];
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
-					velocity -= GetFriction(closestPoint, fp);
+					velocity = (velocity + GetFriction(closestPoint, fp) * time / 2.0f);
+					//velocity += GetFriction(closestPoint, fp);
 
 					int erodeProb = rand() % 10 + 1;
 
@@ -227,7 +233,7 @@ void Fluid::AdvectParticles() {
 
 				}
 
-				std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
+				//std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
 
 				if (position.y() <= -1.5f) {
 					position.v[1] = -1.5f;

@@ -6,11 +6,18 @@
     <ClCompile Include="src\Fluid.cpp" />
     <ClCompile Include="PerlinNoise2d.cpp" />
     <ClCompile Include="TerrainGenerator.cpp" />
+    <ClCompile Include="ColorInterpolator.cpp" />
+    <ClCompile Include="DEMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\TerrainGenerator.h" />
     <ClInclude Include="PerlinNoise2d.h" />
     <ClInclude Include="include\Fluid.h" />
+    <ClInclude Include="include\ColorInterpolator.h" />
+    <ClInclude Include="include\DEMLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SRTM2.asc" />
   </ItemGroup>
 </Project>
