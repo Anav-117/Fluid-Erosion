@@ -244,7 +244,7 @@ void FluidStuff(std::vector<std::vector<TerrainPoint>> t) {
 	iterations++;
 }
 
-Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	int imin = T.coordi - 1;
 	if (imin < 0) {
 		imin = 0;
@@ -256,7 +256,7 @@ Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> te
 	return terrain[imin][T.coordj].pt - terrain[imax][T.coordj].pt;
 }
 
-Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	int imin = T.coordj - 1;
 	if (imin < 0) {
 		imin = 0;
@@ -268,7 +268,7 @@ Vect3d TerrainXTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>> te
 	return terrain[T.coordi][imin].pt - terrain[T.coordi][imax].pt;
 }
 
-Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>> terrain) {
+Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	Vect3d tanz = TerrainZTangent(T, terrain);
 	Vect3d tanx = TerrainXTangent(T, terrain);
 	Vect3d normal = tanz.Cross(tanx).GetNormalized();
