@@ -179,6 +179,7 @@ void Fluid::AdvectParticles() {
 				float closest = 10000;
 				float closestHeight = 0;
 				TerrainPoint closestPoint;
+				int row, col;
 				for (int s = 0; s < terrain.size(); s++) {
 					for (int t = 0; t < terrain[s].size(); t++) {
 						float distance = (terrain[s][t].pt - position).Dot(terrain[s][t].pt - position);
@@ -186,6 +187,8 @@ void Fluid::AdvectParticles() {
 							closest = distance;
 							closestHeight = terrain[s][t].pt.y();
 							closestPoint = terrain[s][t];
+							row = s;
+							col = t;
 						}
 
 						// if particles are touching
@@ -198,11 +201,24 @@ void Fluid::AdvectParticles() {
 					}
 				}
 
-				if (position.y() <= closestHeight) {
-					position.v[1] = closestHeight;
+				if (position.y() <= closestHeight + 0.05f) {
+					position.v[1] = closestHeight + 0.05f;
 					//velocity.v[1] = -1.0f * velocity.v[1];
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
 					velocity -= GetFriction(closestPoint, fp);
+
+					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f) {
+						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
+						//terrain[row].erase(terrain[row].begin() + col);
+						terrain[row][col].pt.v[1] -= 0.05f;
+					}
+
+					/*if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0) {
+						fluidParticles[i][j][k].GetDepositedParticle();
+						std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
+						terrain[row][col].pt.v[1] += 0.05f;
+					}*/
+
 				}
 
 				if (position.y() <= -1.5f) {

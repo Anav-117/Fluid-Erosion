@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 PlatformToolSet=v143:VCToolArchitecture=NativeARM64:VCToolsVersion=14.37.32822:TargetPlatformVersion=10.0.22621.0:
 Debug|Win32|C:\Fluid-Erosion\|
+=======
+PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30133:VCServicingVersionMFC=14.29.30136:TargetPlatformVersion=10.0.22000.0:
+Debug|Win32|C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\|
+>>>>>>> 6053ee77ccef2a6e2bcad76d2e06f7f68f083e96
