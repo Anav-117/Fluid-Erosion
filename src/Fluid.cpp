@@ -46,12 +46,12 @@ Fluid::Fluid(int particleMatrixSize[]) {
 				//std::cout << pos.x() << " : " << pos.y() << " : " << pos.z() << "\n";
 				part.SetMass(6500);
 				restDensity = 1000;
-				part.SetVelocity(Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
+				part.SetVelocity(-1*Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
 				part.SetPressure(Vect3d(0, 0, 0));
 				part.SetViscosity(Vect3d(0, 0, 0));
 				stiffness = 0.02;
 				viscosIndex = 0.25;
-				bounceDamping = 0.0f;
+				bounceDamping = 1.0f;
 				vec.push_back(part);
 			}
 			vec2D.push_back(vec);
@@ -227,7 +227,7 @@ void Fluid::AdvectParticles() {
 
 				}
 
-				//std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
+				std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
 
 				if (position.y() <= -1.5f) {
 					position.v[1] = -1.5f;

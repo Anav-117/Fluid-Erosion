@@ -59,11 +59,24 @@ float zpos = 1.0f;
 float maxHeight = 0.8f;
 float minHeight = 0.0f;
 float pointSize = 0.03;
-//TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
-//vector<vector<TerrainPoint>> terrain = terrainG.points();
-DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 5.0, 4.0, pointSize, minHeight, maxHeight);
-vector<vector<TerrainPoint>> terrain = terrainLoader.getTerrain();
+
+//bool isDEM = false;
 bool isDEM = true;
+vector<vector<TerrainPoint>> GetTerrain() {
+	vector<vector<TerrainPoint>> t;
+	if (isDEM) {
+		DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 3.0, 3.0, pointSize, minHeight, maxHeight);
+		t = terrainLoader.getTerrain();
+	}
+	else {
+		TerrainGenerator terrainG = TerrainGenerator(noise, 0.0, 0.0, -zpos, 3.0, 3.0, 0.05, 0.0, 1.0, 3, 0.01, 4.0);
+		t = terrainG.points();
+	}
+	return t;
+}
+vector<vector<TerrainPoint>> terrain = GetTerrain();
+
+
 
 ColorInterpolator colorInterpolator;
 
