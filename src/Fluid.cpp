@@ -4,7 +4,7 @@
 #include <math.h>
 #include <random>
 #include <algorithm>
-#include <ctime>;
+#include <ctime>
 
 #define g 9.8
 #define pi 3.14159265359
@@ -222,6 +222,8 @@ void Fluid::AdvectParticles() {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
 						//terrain[row].erase(terrain[row].begin() + col);
 						terrain[row][col].pt.v[1] -= 0.005f;
+						terrain[row][col].eroded = true;
+						terrain[row][col].color = Vect3d(1.0f, 0.0f, 0.0f);
 					}
 
 					int depositProb = rand() % 10 + 1;
@@ -230,6 +232,8 @@ void Fluid::AdvectParticles() {
 						fluidParticles[i][j][k].GetDepositedParticle();
 						//std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
 						terrain[row][col].pt.v[1] += 0.005f;
+						terrain[row][col].deposited = true;
+						terrain[row][col].color = Vect3d(1.0f, 1.0f, 0.0f);
 					}
 
 				}

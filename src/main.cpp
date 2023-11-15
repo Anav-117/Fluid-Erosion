@@ -52,7 +52,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 10,10,10 };
+int particleMatrixSize[3] = { 5,5,5 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -100,7 +100,8 @@ bool debugMode = false;
 bool showNormals = false;
 int framerate = 1;
 
-float elapsed_time;
+float elapsed_time = 0;
+float screenShotTime = 0;
 int iterations;
 
 /*********************************
@@ -236,15 +237,15 @@ void FluidStuff() {
 
 	terrain = fluid.GetTerrain();
 
-	if (iterations >= framerate) {
-		float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
-		fluid.SetTime(new_time - elapsed_time);
+	//if (iterations >= framerate) {
+	//float new_time = glutGet(GLUT_ELAPSED_TIME) *0.0001;
+	//fluid.SetTime(new_time - elapsed_time);
 
-		fluid.AdvectParticles();
+	fluid.AdvectParticles();
 
-		elapsed_time = new_time;
-		iterations = 0;
-	}
+	//elapsed_time = new_time;
+		//iterations = 0;
+	//}
 
 	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
 
@@ -265,7 +266,7 @@ void FluidStuff() {
 		}
 	}
 
-	iterations++;
+	//iterations++;
 }
 
 Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
@@ -331,7 +332,10 @@ void VisualizeVoxelPoints() {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
 					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1);
-					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+					if (!(terrain[i][j].eroded || terrain[i][j].deposited)) {
+						terrain[i][j].color = color;
+					}
+					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), terrain[i][j].color, 25);
 				}
 			}
 		}
@@ -403,13 +407,21 @@ void RenderObjects()
 	//cout<< glutGet(GLUT_ELAPSED_TIME) <<endl;
 	
 	//DrawLine(Vect3d(-1.5f, 0.0f, 0.0f), Vect3d(0.0f, 0.0f, 0.0f), Vect3d(1.0f, 0.0f, 0.0f));
+	
+	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001 - screenShotTime;
+	fluid.SetTime(new_time - elapsed_time);
+
 	FluidStuff();
+
+	elapsed_time = new_time;
 
 	if (takeScreenshot) {
 		//takeScreenshot = false;
 
-		Screenshot();
+		//Screenshot();
 	}
+
+	screenShotTime = glutGet(GLUT_ELAPSED_TIME) * 0.0001 - elapsed_time;
 
 	framesElapsed++;
 	std::cout << framesElapsed << "\n";
