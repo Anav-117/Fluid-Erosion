@@ -52,7 +52,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 10,10,10 };
+int particleMatrixSize[3] = { 5,5,5 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -331,7 +331,15 @@ void VisualizeVoxelPoints() {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
 					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1);
-					DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+					if (terrain[i][j].isEroded) {
+						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(0,0,0), 25);
+					}
+					else if(terrain[i][j].isDeposited) {
+						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(1, 0, 0), 25);
+					}
+	else {
+		DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+	}
 				}
 			}
 		}

@@ -222,6 +222,7 @@ void Fluid::AdvectParticles() {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
 						//terrain[row].erase(terrain[row].begin() + col);
 						terrain[row][col].pt.v[1] -= 0.005f;
+						terrain[row][col].isEroded = true;
 					}
 
 					int depositProb = rand() % 10 + 1;
@@ -230,6 +231,7 @@ void Fluid::AdvectParticles() {
 						fluidParticles[i][j][k].GetDepositedParticle();
 						//std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
 						terrain[row][col].pt.v[1] += 0.005f;
+						terrain[row][col].isDeposited = true;
 					}
 
 				}

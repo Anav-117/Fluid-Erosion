@@ -10,7 +10,7 @@ public:
 	Vect3d velocity;
 	float mass;
 	float density;
-	float pressureForce;
+	float pressureForce = 0.00001f;
 	Vect3d pressure;
 	float viscosityForce;
 	Vect3d viscosity;

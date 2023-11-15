@@ -11,6 +11,8 @@ public:
 	int coordj;
 	int coordk;
 	Vect3d normal;
+	bool isEroded;
+	bool isDeposited;
 
 	TerrainPoint() {
 		pt = Vect3d(0, 0, 0);
