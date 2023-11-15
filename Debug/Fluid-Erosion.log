@@ -1,4 +1,86 @@
-﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  Skipping... (no relevant changes detected)
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   TerrainGenerator.cpp
-  Fluid-Erosion.vcxproj -> C:\Users\amycm\Documents\University\Fluid-Erosion\Debug\Fluid-Erosion.exe
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(49,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(50,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(59,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(61,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(73,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(74,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\TerrainGenerator.cpp(75,22): warning C4018: '<': signed/unsigned mismatch
+  vect3d.cpp
+  main.cpp
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(61,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(72,110): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(148,14): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(235,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(246,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(247,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(248,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(253,58): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(272,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(284,11): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(302,39): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(303,42): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(325,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(326,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(335,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(336,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(339,78): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(348,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(349,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(494,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(495,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(496,60): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\main.cpp(497,58): warning C4305: 'argument': truncation from 'double' to 'float'
+  PerlinNoise2d.cpp
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\PerlinNoise2d.cpp(74,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Fluid.cpp
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(31,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(32,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(38,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(39,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(44,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(43,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(42,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(62,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(63,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(64,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(77,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(78,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(79,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(94,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(96,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(98,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(99,85): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(105,33): warning C4244: 'argument': conversion from 'const _Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(112,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(115,24): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(128,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(131,5): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(132,19): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(135,14): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(141,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(154,39): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(168,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(169,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(170,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(183,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(184,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(234,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(238,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(242,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(246,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(250,44): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(263,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(264,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\src\Fluid.cpp(265,22): warning C4018: '<': signed/unsigned mismatch
+  DEMLoader.cpp
+  ColorInterpolator.cpp
+C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\ColorInterpolator.cpp(30,40): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  Generating Code...
+ColorInterpolator.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  Fluid-Erosion.vcxproj -> C:\Users\anav2\Desktop\Project Files\Fluid-Erosion\Debug\Fluid-Erosion.exe

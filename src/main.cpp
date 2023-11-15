@@ -26,6 +26,7 @@
 #include "DEMLoader.h"
 #include "ColorInterpolator.h"
 #include "math/vect3d.h"
+#include <fstream>
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -51,7 +52,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 5,5,5 };
+int particleMatrixSize[3] = { 10,10,10 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -59,6 +60,8 @@ float zpos = 1.0f;
 float maxHeight = 0.8f;
 float minHeight = 0.0f;
 float pointSize = 0.03;
+
+bool takeScreenshot = true;// false;
 
 //bool isDEM = false;
 bool isDEM = true;
@@ -85,6 +88,8 @@ vector <Vect3d> v;   //all the points will be stored here
 //window size
 GLint wWindow = 1200;
 GLint hWindow = 800;
+int numframes = 10000;
+int framesElapsed = 0;
 
 //this defines what will be rendered
 //see Key() how is it controlled
@@ -353,9 +358,39 @@ void SetTerrainNormals() {
 	}
 }
 
+void Screenshot() {
+
+	std::ofstream ImageFile;
+	std::string name = "images/Image" + std::to_string(framesElapsed) + ".ppm";
+	ImageFile.open(name);
+
+	float* pixels = new float[wWindow*hWindow*3];
+	glReadPixels(0, 0, wWindow, hWindow, GL_RGB, GL_FLOAT, pixels);
+
+	ImageFile << "P3\n" << wWindow << " " << hWindow << "\n255\n";
+
+	//std::cout << hWindow << " : " << wWindow << " : " << hWindow * wWindow << "\n";
+
+	for (int i = hWindow-1; i > 0; i--) {
+		for (int j = 0; j < wWindow*3; j++) {
+			ImageFile << (int)(255.0f * pixels[i * wWindow * 3 + j]) << " ";
+			//std::cout << (int)(255.0f * pixels[i * wWindow + j]) << " " << (int)(255.0f * pixels[i * wWindow + j + 1]) << " " << (int)(255.0f * pixels[i * wWindow + j + 2]) << "\n";
+		}
+		ImageFile << "\n";
+	}
+
+	ImageFile.close();
+
+}
+
 //the main rendering function
 void RenderObjects()
 {
+	if (framesElapsed >= numframes) {
+		std::cout << "Simulation Complete\n";
+		exit(0);
+	}
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//set camera
 	glMatrixMode(GL_MODELVIEW);
@@ -367,8 +402,17 @@ void RenderObjects()
 	//GenerateVoxelPoints();
 	//cout<< glutGet(GLUT_ELAPSED_TIME) <<endl;
 	
-	
+	//DrawLine(Vect3d(-1.5f, 0.0f, 0.0f), Vect3d(0.0f, 0.0f, 0.0f), Vect3d(1.0f, 0.0f, 0.0f));
 	FluidStuff();
+
+	if (takeScreenshot) {
+		//takeScreenshot = false;
+
+		Screenshot();
+	}
+
+	framesElapsed++;
+	std::cout << framesElapsed << "\n";
 }
 
 //Add here if you want to control some global behavior
@@ -413,6 +457,10 @@ void Kbd(unsigned char a, int x, int y)//keyboard callback
 	}
 	case 'r': {
 		Randomize(&v);
+		break;
+	}
+	case 'q': {
+		takeScreenshot = true;
 		break;
 	}
 	}
@@ -501,6 +549,7 @@ int main(int argc, char** argv)
 	fluid.SetTerrain(terrain);
 
 	glutInitDisplayString("stencil>=2 rgb double depth samples");
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInit(&argc, argv);
 	glutInitWindowSize(wWindow, hWindow);
 	glutInitWindowPosition(500, 100);

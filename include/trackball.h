@@ -18,7 +18,10 @@ public:
 		m_view3DMatrix = new GLfloat[16];
 		memset(m_view3DMatrix,0,sizeof(GLfloat)*16);
 		m_view3DMatrix[0]=m_view3DMatrix[5]=m_view3DMatrix[10]=m_view3DMatrix[15]=1.0f;
-		m_view3DMatrix[14]=-4;//translate on z a bit back
+		m_view3DMatrix[9] = -0.31622776601;
+		m_view3DMatrix[10] = 0.94868329805;
+		m_view3DMatrix[14]=-6;//translate on z a bit back
+		//m_view3DMatrix[13] = -1;
 	}
 
 	~TrackBallC()

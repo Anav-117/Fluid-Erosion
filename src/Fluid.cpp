@@ -4,6 +4,7 @@
 #include <math.h>
 #include <random>
 #include <algorithm>
+#include <ctime>;
 
 #define g 9.8
 #define pi 3.14159265359
@@ -18,7 +19,9 @@ void Fluid::SetTime(float time) {
 }
 
 Fluid::Fluid(int particleMatrixSize[]) {
+	srand(std::time(NULL));
 	time = 0;
+	source = Vect3d(-1.5f, -0.5f, 0.0f);
 	for (int i = 0; i < particleMatrixSize[0]; i++) {
 		std::vector<std::vector<Particle>> vec2D;
 		for (int j = 0; j < particleMatrixSize[1]; j++) {
@@ -38,15 +41,19 @@ Fluid::Fluid(int particleMatrixSize[]) {
 				float x_off = (3.0 / (float)particleMatrixSize[0]);
 				float y_off = (3.0 / (float)particleMatrixSize[1]);
 
-				Particle part(Vect3d(
+				Particle part(source);
+				    /*Vect3d(
 					rand() % 100 * 0.001,
 					rand() % 100 * 0.001,
-					rand() % 100 * 0.001));// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
+					rand() % 100 * 0.001));*/// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
 				//Vect3d pos = part.GetPos();
 				//std::cout << pos.x() << " : " << pos.y() << " : " << pos.z() << "\n";
 				part.SetMass(6500);
 				restDensity = 1000;
-				part.SetVelocity(-1*Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX)));
+				float vel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				Vect3d jitter = 0.1f * Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+				part.SetStartingVelocity(-vel * (source) + jitter);
+				part.SetVelocity(part.GetStartingVelocity());
 				part.SetPressure(Vect3d(0, 0, 0));
 				part.SetViscosity(Vect3d(0, 0, 0));
 				stiffness = 0.02;
@@ -177,7 +184,7 @@ void Fluid::AdvectParticles() {
 				velocity = (fp.GetVelocity() + accel * time / 2.0f);
 
 				float closest = 10000;
-				float closestHeight = 0;
+				float closestHeight = -15.f;
 				TerrainPoint closestPoint;
 				int row, col;
 				for (int s = 0; s < terrain.size(); s++) {
@@ -185,7 +192,7 @@ void Fluid::AdvectParticles() {
 						Vect3d terrainPt = Vect3d(terrain[s][t].pt.x(), 0, terrain[s][t].pt.z());
 						Vect3d pos = Vect3d(position.x(), 0, position.z());
 						float distance = (terrainPt - pos).Dot(terrainPt - pos);
-						if (distance < closest) {
+						if (distance < closest && distance < 0.05f) {
 							closest = distance;
 							closestHeight = terrain[s][t].pt.y();
 							closestPoint = terrain[s][t];
@@ -227,28 +234,34 @@ void Fluid::AdvectParticles() {
 
 				}
 
-				std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
+				//std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
 
 				if (position.y() <= -1.5f) {
-					position.v[1] = -1.5f;
-					velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
+					position = source;
+					velocity = fluidParticles[i][j][k].GetStartingVelocity();
+					//position.v[1] = -1.5f;
+					//velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
 				}
-				if (position.x() <= -1.5f) {
-					position.v[0] = -1.5f;
-					velocity.v[0] = -1.0f * bounceDamping * velocity.v[0];
-				}
-				else if (position.x() >= 1.5f) {
-					position.v[0] = 1.5f;
-					velocity.v[0] = -1.0f * bounceDamping * velocity.v[0];
-				}
-				if (position.z() <= -1.5f) {
-					position.v[2] = -1.5f;
-					velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
-				}
-				else if (position.z() >= 1.5f) {
-					position.v[2] = 1.5f;
-					velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
-				}
+				//if (position.x() <= -1.5f) {
+				//	position = source;
+				//	//position.v[0] = -1.5f;
+				//	//velocity.v[0] = -1.0f * bounceDamping * velocity.v[0];
+				//}
+				//else if (position.x() >= 1.5f) {
+				//	position = source;
+				//	//position.v[0] = 1.5f;
+				//	//velocity.v[0] = -1.0f * bounceDamping * velocity.v[0];
+				//}
+				//if (position.z() <= -1.5f) {
+				//	position = source;
+				//	//position.v[2] = -1.5f;
+				//	//velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
+				//}
+				//else if (position.z() >= 1.5f) {
+				//	position = source;
+				//	//position.v[2] = 1.5f;
+				//	//velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
+				//}
 				
 
 				fluidParticles[i][j][k].SetVelocity(velocity);

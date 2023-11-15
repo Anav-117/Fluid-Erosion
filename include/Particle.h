@@ -18,6 +18,7 @@ public:
 	Vect3d color;
 	std::vector<Particle> Kernel;
 	std::vector<TerrainPoint> deposit;
+	Vect3d startingVelocity;
 
 	Particle() {
 		position = Vect3d(0, 0, 0);
@@ -79,5 +80,10 @@ public:
 		if (deposit.size() > 0)
 			deposit.pop_back();
 	}
+
+	void SetStartingVelocity(Vect3d vel) { startingVelocity = vel; }
+
+	Vect3d GetStartingVelocity() { return startingVelocity; }
+
 };
 

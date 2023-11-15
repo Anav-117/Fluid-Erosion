@@ -3,6 +3,7 @@ Debug/
 x64/
 .vs/
 freeglut.dll
+images/
 
 *.exe
 *.ilk
@@ -10,5 +11,6 @@ freeglut.dll
 *.pdb
 *.tlog
 *.obj
+*.gif
 SRTM.asc
 SRTM2.asc

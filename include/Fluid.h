@@ -3,6 +3,7 @@
 #include "Particle.h"
 #include <vector>
 #include "TerrainPoint.h"
+#include <math/vect3d.h>
 
 class Fluid {
 public:
@@ -21,6 +22,8 @@ public:
 	Vect3d GetFriction(TerrainPoint closestPoint, Particle fluidParticle);
 	bool ShouldErode(TerrainPoint point, Particle fluidParticle);
 	bool ShouldDeposit(TerrainPoint point, Particle fluidParticle);
+	Vect3d GetSource() { return source; }
+	void SetSource(Vect3d src) { source = src; }
 
 
 	std::vector <std::vector<std::vector<Particle>>> fluidParticles;
@@ -37,4 +40,6 @@ public:
 	double bounceDamping;
 	std::vector<std::vector<TerrainPoint>> terrain;
 	std::vector<TerrainPoint> eroded;
+	Vect3d source;
+
 };
