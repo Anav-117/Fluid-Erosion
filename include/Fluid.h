@@ -10,7 +10,6 @@ typedef Particle* ParticlePtr;
 class Fluid {
 public:
 	Fluid(int particleMatrixSize[]);
-	Particle init();
 	std::vector<std::vector<std::vector<Particle>>> GetParticles() { return fluidParticles; }
 	void GenerateKernel(Particle* part, ParticlePtr Kernel[], int& kernelSize);
 	void UpdateDenstiy(Particle* part, ParticlePtr Kernel[], int kernelSize);

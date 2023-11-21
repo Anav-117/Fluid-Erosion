@@ -54,7 +54,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 10,10,10 };
+int particleMatrixSize[3] = { 5,5,5 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -256,7 +256,7 @@ void FluidStuff() {
 			for (int k = 0; k < fp[i][j].size(); k++) {
 				Vect3d pos = fp[i][j][k].GetPos();
 				if (debugMode) {
-					DrawPoint(pos, Vect3d(0, 0, 1));
+					DrawPoint(pos, Vect3d(i*1.0f/particleMatrixSize[0], j * 1.0f / particleMatrixSize[1], k * 1.0f / particleMatrixSize[2]));
 					if (showNormals) {
 						DrawLine(pos, pos + 0.1 * fp[i][j][k].GetVelocity(), Vect3d(0, 1, 1));
 					}
@@ -335,7 +335,7 @@ void VisualizeVoxelPoints() {
 				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
 					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1);
 					if (terrain[i][j].isEroded) {
-						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(0,0,0), 25);
+						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
 					}
 					else if(terrain[i][j].isDeposited) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(1, 0, 0), 25);
@@ -352,9 +352,9 @@ void VisualizeVoxelPoints() {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				//printf("i = %d, j= %d,  threadId = %d \n", i, j, omp_get_thread_num());
-				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
+				DrawPoint(terrain[i][j].pt, Vect3d(0.0, i * 1.0f / terrain.size(), j * 1.0f / terrain[i].size()));
 				if (showNormals) {
-					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(0, 0, 1));
+					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 1, 1));
 				}
 			}
 		}
@@ -363,6 +363,12 @@ void VisualizeVoxelPoints() {
 }
 
 void SetTerrainNormals() {
+	for (int i = 0; i < terrain.size(); i++) {
+		for (int j = 0; j < terrain[i].size(); j++) {
+			terrain[i][j].coordi = i;
+			terrain[i][j].coordj = j;
+		}
+	}
 	#pragma omp parallel for collapse(2)
 	for (int i = 0; i < terrain.size(); i++) {
 		for (int j = 0; j < terrain[i].size(); j++) {
@@ -426,7 +432,7 @@ void RenderObjects()
 	}
 
 	framesElapsed++;
-	std::cout << framesElapsed << "\n";
+	//std::cout << framesElapsed << "\n";
 }
 
 //Add here if you want to control some global behavior
