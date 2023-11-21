@@ -190,14 +190,41 @@ Vect3d Fluid::GetFriction(TerrainPoint closestPoint, Particle fluidParticle) {
 	return fluidParticle.velocity * 0.001; // TODO: use the correct formula
 }
 
-bool Fluid::ShouldErode(TerrainPoint point, Particle fluidParticle) {
-	// TODO: use the correct formula
-	return true;
+void Fluid::FixOutliers(TerrainPoint &tp, Particle &fp) {
+	if (fp.velocity.GetY() > 10.0f) {
+		fp.velocity.SetY(0.0f);
+	}
+	if (tp.pt.GetY() > fp.position.GetY() * 10) {
+		fp.position.SetY(tp.pt.GetY());
+	}
 }
 
-bool Fluid::ShouldDeposit(TerrainPoint point, Particle fluidParticle) {
-	// TODO: use the correct formula
-	return false;
+bool Fluid::ShouldDeposit(TerrainPoint &pt) {
+	Vect3d avg = Vect3d(0,0,0);
+	int c = 0;
+	for (int i = 1; i < 5; i++) {
+		if (pt.coordi - i >=0) {
+			avg += terrain[pt.coordi - i][pt.coordj].pt;
+			c++;
+		}
+		if (pt.coordi + i < terrain.size()) {
+			avg += terrain[pt.coordi + i][pt.coordj].pt;
+			c++;
+		}
+		if (pt.coordj - i >= 0) {
+			avg += terrain[pt.coordi][pt.coordj - i].pt;
+			c++;
+		}
+		if (pt.coordj + i < terrain[pt.coordi].size()) {
+			avg += terrain[pt.coordi][pt.coordj + i].pt;
+			c++;
+		}
+	}
+	avg /= c;
+	if (pt.pt.GetY() > avg.GetY() + 0.005f * 5) {
+		return false;
+	}
+	return true;
 }
 
 void Fluid::AdvectParticles() {
@@ -249,16 +276,18 @@ void Fluid::AdvectParticles() {
 					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f && erodeProb <= 2) {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
 						//terrain[row].erase(terrain[row].begin() + col);
-						terrain[row][col].pt.v[1] -= 0.005f;
+						//terrain[row][col].pt.v[1] -= 0.005f;
+						terrain[row][col].pt -= 0.005f * terrain[row][col].normal;
 						terrain[row][col].isEroded = true;
 					}
 
 					int depositProb = rand() % 10 + 1;
 
-					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2) {
+					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2 && ShouldDeposit(terrain[row][col])) {
 						fluidParticles[i][j][k].GetDepositedParticle();
 						//std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
-						terrain[row][col].pt.v[1] += 0.005f;
+						//terrain[row][col].pt.v[1] += 0.005f;
+						terrain[row][col].pt += 0.005f * terrain[row][col].normal;
 						terrain[row][col].isDeposited = true;
 					}
 
@@ -295,6 +324,7 @@ void Fluid::AdvectParticles() {
 				//	//velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
 				//}
 
+				FixOutliers(closestPoint, fluidParticles[i][j][k]);
 
 				fluidParticles[i][j][k].SetVelocity(velocity);
 
@@ -304,6 +334,8 @@ void Fluid::AdvectParticles() {
 			}
 		}
 	}
+
+	
 
 	ParticlePtr* Kernel = new ParticlePtr[sizes[0] * sizes[1] * sizes[2]];
 	#pragma omp parallel for collapse(3)
