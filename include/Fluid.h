@@ -5,14 +5,17 @@
 #include "TerrainPoint.h"
 #include <math/vect3d.h>
 
+typedef Particle* ParticlePtr;
+
 class Fluid {
 public:
 	Fluid(int particleMatrixSize[]);
+	Particle init();
 	std::vector<std::vector<std::vector<Particle>>> GetParticles() { return fluidParticles; }
-	void GenerateKernel(Particle* part);
-	void UpdateDenstiy(Particle* part);
-	void UpdatePressure(Particle* part);
-	void UpdateViscosity(Particle* part);
+	void GenerateKernel(Particle* part, ParticlePtr Kernel[], int& kernelSize);
+	void UpdateDenstiy(Particle* part, ParticlePtr Kernel[], int kernelSize);
+	void UpdatePressure(Particle* part, ParticlePtr Kernel[], int kernelSize);
+	void UpdateViscosity(Particle* part, ParticlePtr Kernel[], int kernelSize);
 	void UpdateExternalForce(Particle* part);
 	void AdvectParticles();
 	void SetTime(float time);
@@ -34,12 +37,12 @@ public:
 	double KernelScalePressure;
 	double KernelScaleViscous;
 	float time;
-	std::vector<Particle> Kernel;
 	double stiffness;
 	double restDensity;
 	double bounceDamping;
 	std::vector<std::vector<TerrainPoint>> terrain;
 	std::vector<TerrainPoint> eroded;
 	Vect3d source;
+	int sizes[3];
 
 };

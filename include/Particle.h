@@ -16,7 +16,7 @@ public:
 	Vect3d viscosity;
 	Vect3d externalForce;
 	Vect3d color;
-	std::vector<Particle> Kernel;
+	//std::vector<Particle> Kernel;
 	std::vector<TerrainPoint> deposit;
 	Vect3d startingVelocity;
 
@@ -68,11 +68,11 @@ public:
 
 	void SetExternalForce(Vect3d e) { externalForce = e; }
 
-	std::vector<Particle> GetKernel() { return Kernel; }
+	/*std::vector<Particle> GetKernel() { return Kernel; }
 
 	void SetKernel(std::vector<Particle> k) { Kernel = k; }
 
-	void ClearKernel() { Kernel.clear(); }
+	void ClearKernel() { Kernel.clear(); }*/
 
 	void AddErodedParticle(TerrainPoint p) { deposit.push_back(p); }
 

@@ -27,6 +27,8 @@
 #include "ColorInterpolator.h"
 #include "math/vect3d.h"
 #include <fstream>
+#include<windows.h> 
+#include <omp.h>
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -52,7 +54,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 5,5,5 };
+int particleMatrixSize[3] = { 10,10,10 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -248,6 +250,7 @@ void FluidStuff() {
 
 	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
 
+	//#pragma omp parallel for collapse(3)
 	for (int i = 0; i < fp.size(); i++) {
 		for (int j = 0; j < fp[i].size(); j++) {
 			for (int k = 0; k < fp[i][j].size(); k++) {
@@ -337,27 +340,30 @@ void VisualizeVoxelPoints() {
 					else if(terrain[i][j].isDeposited) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(1, 0, 0), 25);
 					}
-	else {
-		DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
-	}
+					else {
+						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+					}
 				}
 			}
 		}
 	}
 	else {
+		//#pragma omp parallel for collapse(2)
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
+				//printf("i = %d, j= %d,  threadId = %d \n", i, j, omp_get_thread_num());
 				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
 				if (showNormals) {
-					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 0, 0));
+					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(0, 0, 1));
 				}
 			}
 		}
-
+	
 	}
 }
 
 void SetTerrainNormals() {
+	#pragma omp parallel for collapse(2)
 	for (int i = 0; i < terrain.size(); i++) {
 		for (int j = 0; j < terrain[i].size(); j++) {
 			//DrawPoint(points[i][j].pt, Vect3d(1, 1, 1));
@@ -416,7 +422,7 @@ void RenderObjects()
 	if (takeScreenshot) {
 		//takeScreenshot = false;
 
-		Screenshot();
+		//Screenshot();
 	}
 
 	framesElapsed++;
