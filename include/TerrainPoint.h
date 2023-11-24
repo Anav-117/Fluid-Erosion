@@ -12,8 +12,8 @@ public:
 	int coordk;
 	Vect3d normal;
 	Vect3d color = Vect3d(0.0f, 0.0f, 0.0f);
-	bool eroded = false;
-	bool deposited = false;
+	bool isEroded = false;
+	bool isDeposited = false;
 
 	TerrainPoint() {
 		pt = Vect3d(0, 0, 0);

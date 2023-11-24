@@ -5,9 +5,11 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <omp.h>
 
 #define g 9.8
 #define pi 3.14159265359
+#define closeness 10000
 
 void Fluid::SetTerrain(std::vector<std::vector<TerrainPoint>> t) {
 	terrain = t;
@@ -22,12 +24,13 @@ Fluid::Fluid(int particleMatrixSize[]) {
 	srand(std::time(NULL));
 	time = 0;
 	source = Vect3d(-1.5f, -0.5f, 0.0f);
+	sizes[0] = particleMatrixSize[0]; sizes[1] = particleMatrixSize[1]; sizes[2] = particleMatrixSize[2];
 	for (int i = 0; i < particleMatrixSize[0]; i++) {
 		std::vector<std::vector<Particle>> vec2D;
 		for (int j = 0; j < particleMatrixSize[1]; j++) {
 			std::vector<Particle> vec;
 			for (int k = 0; k < particleMatrixSize[2]; k++) {
-				ParticleSize = 9.0f / ((float)particleMatrixSize[0] * (float)particleMatrixSize[1]);
+				ParticleSize = 9.0f / ((float)sizes[0] * (float)sizes[1]);
 				kernelRadius = ParticleSize * 4;
 
 				//Setting Kernel values
@@ -38,49 +41,58 @@ Fluid::Fluid(int particleMatrixSize[]) {
 				KernelScalePressure = 45.0 / (pi * h_6);
 				KernelScaleViscous = 45.0 / (pi * h_6);
 
-				float x_off = (3.0 / (float)particleMatrixSize[0]);
-				float y_off = (3.0 / (float)particleMatrixSize[1]);
+				float x_off = (3.0 / (float)sizes[0]);
+				float y_off = (3.0 / (float)sizes[1]);
 
-				Particle part(source);
-				    /*Vect3d(
-					rand() % 100 * 0.001,
-					rand() % 100 * 0.001,
-					rand() % 100 * 0.001));*/// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
+				//Particle part(source);
+				Vect3d pos = Vect3d(-1.5f, -0.5f, (rand() % 1000) * 1.0f / closeness);
+				Particle part(pos);
+				/*Vect3d(
+				rand() % 100 * 0.001,
+				rand() % 100 * 0.001,
+				rand() % 100 * 0.001));*/// Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f, 2.0f, static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 3.0f - 1.5f));
 				//Vect3d pos = part.GetPos();
 				//std::cout << pos.x() << " : " << pos.y() << " : " << pos.z() << "\n";
 				part.SetMass(6500);
 				restDensity = 1000;
 				float vel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 				Vect3d jitter = 0.1f * Vect3d(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
-				part.SetStartingVelocity(-vel * (source) + jitter);
+				part.SetStartingVelocity(-vel * (source)+jitter);
 				part.SetVelocity(part.GetStartingVelocity());
+				part.SetDensity(-1.0f);
+				part.SetPressureForce(-1.0f);
 				part.SetPressure(Vect3d(0, 0, 0));
 				part.SetViscosity(Vect3d(0, 0, 0));
 				stiffness = 0.02;
 				viscosIndex = 0.25;
 				bounceDamping = 1.0f;
+
 				vec.push_back(part);
 			}
 			vec2D.push_back(vec);
 		}
 		fluidParticles.push_back(vec2D);
 	}
-
+	
+	ParticlePtr* Kernel = new ParticlePtr[sizes[0] * sizes[1] * sizes[2]];
+	#pragma omp parallel for collapse(3)
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
 			for (int k = 0; k < fluidParticles[i][j].size(); k++) {
-				GenerateKernel(&fluidParticles[i][j][k]);
-				UpdateDenstiy(&fluidParticles[i][j][k]);
-				UpdatePressure(&fluidParticles[i][j][k]);
-				UpdateViscosity(&fluidParticles[i][j][k]);
+				int kernelSize = 0;
+				GenerateKernel(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdateDenstiy(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdatePressure(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdateViscosity(&fluidParticles[i][j][k], Kernel, kernelSize);
 				UpdateExternalForce(&fluidParticles[i][j][k]);
 			}
 		}
 	}
 }
 
-void Fluid::GenerateKernel(Particle* part) {
-	Kernel.clear();
+void Fluid::GenerateKernel(Particle* part, ParticlePtr Kernel[], int& kernelSize) {
+	kernelSize = 0;
+	#pragma omp parallel for collapse(3)
 	for (int k = 0; k < fluidParticles.size(); k++) {
 		for (int l = 0; l < fluidParticles[k].size(); l++) {
 			for (int m = 0; m < fluidParticles[k][l].size(); m++) {
@@ -88,22 +100,28 @@ void Fluid::GenerateKernel(Particle* part) {
 					continue;
 				}
 
+				Vect3d t = part->GetPos() - fluidParticles[k][l][m].GetPos();
 				float dist = (part->GetPos() - fluidParticles[k][l][m].GetPos()).Length();
 				if (dist < kernelRadius) {
-					Kernel.push_back(fluidParticles[k][l][m]);
+					Kernel[kernelSize] = &fluidParticles[k][l][m];
+					kernelSize++;
 				}
 			}
 		}
 	}
 }
 
-void Fluid::UpdateDenstiy(Particle* part) {
+void Fluid::UpdateDenstiy(Particle* part, ParticlePtr Kernel[], int kernelSize) {
 	float density = part->GetMass() * KernelScale * pow(kernelRadius, 6);
 
-	for (int i = 0; i < Kernel.size(); i++) {
-		float dist = (part->GetPos() - Kernel[i].GetPos()).Length();
+	#pragma omp parallel for
+	for (int i = 0; i < kernelSize; i++) {
+		float dist = (part->GetPos() - Kernel[i]->GetPos()).Length();
 		float kernelVal = (kernelRadius * kernelRadius) - (dist * dist);
-		density += Kernel[i].GetMass() * KernelScale * (kernelVal * kernelVal * kernelVal);
+		density += Kernel[i]->GetMass() * KernelScale * (kernelVal * kernelVal * kernelVal);
+		if (density > 10000000000) {
+			std::cout << std::endl;
+		}
 	}
 
 	part->SetDensity(density);
@@ -112,15 +130,21 @@ void Fluid::UpdateDenstiy(Particle* part) {
 	part->SetPressureForce(std::max(stiffness * (density - restDensity), 0.0));
 }
 
-void Fluid::UpdatePressure(Particle* part) {
+void Fluid::UpdatePressure(Particle* part, ParticlePtr Kernel[], int kernelSize) {
 	Vect3d pressure = Vect3d(0, 0, 0);
 	float pressureForce = 0;
 
-	for (int i = 0; i < Kernel.size(); i++) {
-		pressureForce = Kernel[i].GetMass() *
-			((part->GetPressureForce() + Kernel[i].GetPressureForce()) / (2.0f * Kernel[i].GetPressureForce())) *
-			KernelScalePressure * pow((kernelRadius - (part->GetPos() - Kernel[i].GetPos()).Length()), 2);
-		pressure -= pressureForce * (part->GetPos() - Kernel[i].GetPos()).GetNormalized();
+	#pragma omp parallel for
+	for (int i = 0; i < kernelSize; i++) {
+		float pf = Kernel[i]->GetPressureForce();
+		if (pf <= 0.00001f) {
+			continue;
+		}
+		float t = (kernelRadius - (part->GetPos() - Kernel[i]->GetPos()).Length());
+		pressureForce = Kernel[i]->GetMass() *
+			((part->GetPressureForce() + Kernel[i]->GetPressureForce()) / (2.0f * pf)) *
+			KernelScalePressure * t * t;
+		pressure -= pressureForce * (part->GetPos() - Kernel[i]->GetPos()).GetNormalized();
 	}
 
 	//pressure = -1 * pressure;
@@ -128,15 +152,20 @@ void Fluid::UpdatePressure(Particle* part) {
 	part->SetPressure(pressure);
 }
 
-void Fluid::UpdateViscosity(Particle* part) {
+void Fluid::UpdateViscosity(Particle* part, ParticlePtr Kernel[], int kernelSize) {
 	Vect3d viscosity = Vect3d(0, 0, 0);
 	float viscosityForce = 0;
 
-	for (int i = 0; i < Kernel.size(); i++) {
-		viscosity = Kernel[i].GetMass() *
-			((Kernel[i].GetVelocity() - part->GetVelocity()) / Kernel[i].GetDensity() *
+	#pragma omp parallel for
+	for (int i = 0; i < kernelSize; i++) {
+		float d = Kernel[i]->GetDensity();
+		if (d <= 0.00001f) {
+			continue;
+		}
+		viscosity = Kernel[i]->GetMass() *
+			((Kernel[i]->GetVelocity() - part->GetVelocity()) / d *
 				KernelScaleViscous *
-				(kernelRadius - (part->GetPos() - Kernel[i].GetPos()).Length()));
+				(kernelRadius - (part->GetPos() - Kernel[i]->GetPos()).Length()));
 	}
 
 	viscosity = viscosIndex * viscosity;
@@ -161,17 +190,45 @@ Vect3d Fluid::GetFriction(TerrainPoint closestPoint, Particle fluidParticle) {
 	return fluidParticle.velocity * 0.001; // TODO: use the correct formula
 }
 
-bool Fluid::ShouldErode(TerrainPoint point, Particle fluidParticle) {
-	// TODO: use the correct formula
+void Fluid::FixOutliers(TerrainPoint &tp, Particle &fp) {
+	if (fp.velocity.GetY() > 10.0f) {
+		fp.velocity.SetY(0.0f);
+	}
+	if (tp.pt.GetY() > fp.position.GetY() * 10) {
+		fp.position.SetY(tp.pt.GetY());
+	}
+}
+
+bool Fluid::ShouldDeposit(TerrainPoint &pt) {
+	Vect3d avg = Vect3d(0,0,0);
+	int c = 0;
+	for (int i = 1; i < 5; i++) {
+		if (pt.coordi - i >=0) {
+			avg += terrain[pt.coordi - i][pt.coordj].pt;
+			c++;
+		}
+		if (pt.coordi + i < terrain.size()) {
+			avg += terrain[pt.coordi + i][pt.coordj].pt;
+			c++;
+		}
+		if (pt.coordj - i >= 0) {
+			avg += terrain[pt.coordi][pt.coordj - i].pt;
+			c++;
+		}
+		if (pt.coordj + i < terrain[pt.coordi].size()) {
+			avg += terrain[pt.coordi][pt.coordj + i].pt;
+			c++;
+		}
+	}
+	avg /= c;
+	if (pt.pt.GetY() > avg.GetY() + 0.005f * 5) {
+		return false;
+	}
 	return true;
 }
 
-bool Fluid::ShouldDeposit(TerrainPoint point, Particle fluidParticle) {
-	// TODO: use the correct formula
-	return false;
-}
-
 void Fluid::AdvectParticles() {
+	#pragma omp parallel for collapse(3)
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
 			for (int k = 0; k < fluidParticles[i][j].size(); k++) {
@@ -183,10 +240,16 @@ void Fluid::AdvectParticles() {
 				Vect3d position = fp.GetPos() + velocity * time;
 				velocity = (fp.GetVelocity() + accel * time / 2.0f);
 
+				if (velocity.GetY() > 10) {
+					//std::cout << i << j << k << std::endl;
+				}
+
 				float closest = 10000;
 				float closestHeight = -15.f;
 				TerrainPoint closestPoint;
 				int row, col;
+
+				#pragma omp parallel for collapse(2)
 				for (int s = 0; s < terrain.size(); s++) {
 					for (int t = 0; t < terrain[s].size(); t++) {
 						Vect3d terrainPt = Vect3d(terrain[s][t].pt.x(), 0, terrain[s][t].pt.z());
@@ -199,14 +262,6 @@ void Fluid::AdvectParticles() {
 							row = s;
 							col = t;
 						}
-
-						// if particles are touching
-						//if (distance < 0.001) {
-						//	if (ShouldErode(terrain[s][t], fp)) {
-						//		eroded.push_back(terrain[s][t]);
-						//		//terrain[s][t].pt -= terrain[s][t].normal * 0.1;
-						//	}
-						//}
 					}
 				}
 
@@ -218,22 +273,22 @@ void Fluid::AdvectParticles() {
 
 					int erodeProb = rand() % 10 + 1;
 
-					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f && erodeProb <=2 ) {
+					if (velocity.Length() >= 1.3 && (closestPoint.pt - position).Length() <= 0.1f && erodeProb <= 2) {
 						fluidParticles[i][j][k].AddErodedParticle(closestPoint);
 						//terrain[row].erase(terrain[row].begin() + col);
-						terrain[row][col].pt.v[1] -= 0.005f;
-						terrain[row][col].eroded = true;
-						terrain[row][col].color = Vect3d(1.0f, 0.0f, 0.0f);
+						//terrain[row][col].pt.v[1] -= 0.005f;
+						terrain[row][col].pt -= 0.005f * terrain[row][col].normal;
+						terrain[row][col].isEroded = true;
 					}
 
 					int depositProb = rand() % 10 + 1;
 
-					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2) {
+					if (velocity.Length() <= 0.5 && velocity.Length() > 0.2 && fluidParticles[i][j][k].deposit.size() > 0 && depositProb < 2 && ShouldDeposit(terrain[row][col])) {
 						fluidParticles[i][j][k].GetDepositedParticle();
 						//std::cout << fluidParticles[i][j][k].deposit.size() << "\n";
-						terrain[row][col].pt.v[1] += 0.005f;
-						terrain[row][col].deposited = true;
-						terrain[row][col].color = Vect3d(1.0f, 1.0f, 0.0f);
+						//terrain[row][col].pt.v[1] += 0.005f;
+						terrain[row][col].pt += 0.005f * terrain[row][col].normal;
+						terrain[row][col].isDeposited = true;
 					}
 
 				}
@@ -241,8 +296,10 @@ void Fluid::AdvectParticles() {
 				//std::cout << "Pos = " << position.x() << " : " << position.y() << " : " << position.z()<<"\n";
 
 				if (position.y() <= -1.5f) {
-					position = source;
-					velocity = fluidParticles[i][j][k].GetStartingVelocity();
+					Vect3d startV = fluidParticles[i][j][k].GetStartingVelocity();
+					//fluidParticles[i][j][k] = init();
+					position = Vect3d(-1.5f, -0.5f, (rand() % 1000) * 1.0f / closeness);
+					velocity = startV;
 					fluidParticles[i][j][k].deposit.clear();
 					//position.v[1] = -1.5f;
 					//velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
@@ -267,7 +324,8 @@ void Fluid::AdvectParticles() {
 				//	//position.v[2] = 1.5f;
 				//	//velocity.v[2] = -1.0f * bounceDamping * velocity.v[2];
 				//}
-				
+
+				FixOutliers(closestPoint, fluidParticles[i][j][k]);
 
 				fluidParticles[i][j][k].SetVelocity(velocity);
 
@@ -278,13 +336,18 @@ void Fluid::AdvectParticles() {
 		}
 	}
 
+	
+
+	ParticlePtr* Kernel = new ParticlePtr[sizes[0] * sizes[1] * sizes[2]];
+	#pragma omp parallel for collapse(3)
 	for (int i = 0; i < fluidParticles.size(); i++) {
 		for (int j = 0; j < fluidParticles[i].size(); j++) {
 			for (int k = 0; k < fluidParticles[i][j].size(); k++) {
-				GenerateKernel(&fluidParticles[i][j][k]);
-				UpdateDenstiy(&fluidParticles[i][j][k]);
-				UpdatePressure(&fluidParticles[i][j][k]);
-				UpdateViscosity(&fluidParticles[i][j][k]);
+				int kernelSize = 0;
+				GenerateKernel(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdateDenstiy(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdatePressure(&fluidParticles[i][j][k], Kernel, kernelSize);
+				UpdateViscosity(&fluidParticles[i][j][k], Kernel, kernelSize);
 				UpdateExternalForce(&fluidParticles[i][j][k]);
 			}
 		}
