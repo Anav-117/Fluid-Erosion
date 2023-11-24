@@ -52,7 +52,7 @@ inline void Vect3d::Normalize()
 	v[2]*=scalefactor;
 }
 
-inline float Vect3d::Length() const
+float Vect3d::Length() const
 {
 	return (float)sqrt((v[0]*v[0])+(v[1]*v[1])+(v[2]*v[2]));
 }

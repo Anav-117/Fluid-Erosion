@@ -201,12 +201,12 @@ void Fluid::AdvectParticles() {
 						}
 
 						// if particles are touching
-						if (distance < 0.001) {
-							if (ShouldErode(terrain[s][t], fp)) {
-								eroded.push_back(terrain[s][t]);
-								//terrain[s][t].pt -= terrain[s][t].normal * 0.1;
-							}
-						}
+						//if (distance < 0.001) {
+						//	if (ShouldErode(terrain[s][t], fp)) {
+						//		eroded.push_back(terrain[s][t]);
+						//		//terrain[s][t].pt -= terrain[s][t].normal * 0.1;
+						//	}
+						//}
 					}
 				}
 
@@ -243,6 +243,7 @@ void Fluid::AdvectParticles() {
 				if (position.y() <= -1.5f) {
 					position = source;
 					velocity = fluidParticles[i][j][k].GetStartingVelocity();
+					fluidParticles[i][j][k].deposit.clear();
 					//position.v[1] = -1.5f;
 					//velocity.v[1] = -1.0f * bounceDamping * velocity.v[1];
 				}

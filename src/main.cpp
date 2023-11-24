@@ -52,7 +52,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 5,5,5 };
+int particleMatrixSize[3] = { 100,100,100 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
