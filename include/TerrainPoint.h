@@ -21,6 +21,8 @@ public:
 		coordi = 0;
 		coordj = 0;
 		coordk = 0;
+		isEroded = false;
+		isDeposited = false;
 	}
 
 	TerrainPoint(Vect3d point) {
@@ -30,6 +32,8 @@ public:
 		coordi = 0;
 		coordj = 0;
 		coordk = 0;
+		isEroded = false;
+		isDeposited = false;
 	}
 
 	void SetCoords(int i, int j, int k) {

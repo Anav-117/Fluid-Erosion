@@ -57,9 +57,20 @@ Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
 float zpos = 1.0f;
+float xpos = 0.0f;
+float ypos = 0.0f;
+
+float terrainLength = 3.0f;
+float terrainWidth = 3.0f;
 float maxHeight = 0.8f;
 float minHeight = 0.0f;
 float pointSize = 0.03;
+
+float ambientLightIntensity = 0.4f;
+Vect3d diffuseLightDirection = Vect3d(0.0, -0.5, 0.0);
+Vect3d directionalLightDirection = Vect3d(0.0, -1.0, 1.0);
+Vect3d directionalLightPosition = Vect3d(0.0, -1.0, 0.0);
+float directionalLightIntensity = 1.0f;
 
 bool takeScreenshot = true;// false;
 
@@ -68,7 +79,7 @@ bool isDEM = true;
 vector<vector<TerrainPoint>> GetTerrain() {
 	vector<vector<TerrainPoint>> t;
 	if (isDEM) {
-		DEMLoader terrainLoader = DEMLoader(0.0, 0.0, -zpos, 3.0, 3.0, pointSize, minHeight, maxHeight);
+		DEMLoader terrainLoader = DEMLoader(xpos, ypos, -zpos, terrainLength, terrainWidth, pointSize, minHeight, maxHeight);
 		t = terrainLoader.getTerrain();
 	}
 	else {
@@ -302,6 +313,30 @@ Vect3d TerrainNormal(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& ter
 	return normal;
 }
 
+bool isVoxelAt(Vect3d pos) {
+	float posx = (pos.x() - xpos + terrainLength / 2) / terrainLength;
+	float posz = (pos.z() - zpos + terrainWidth / 2) / terrainWidth;
+
+	if (posx < 0 || posz < 0 || posx>1 || posz>1) {
+		return false;
+	}
+
+	return terrain[(int)(posx / pointSize)][(int)(posz / pointSize)].pt.GetZ() > pos.GetZ();
+}
+
+bool isShadowed(Vect3d voxelPosition, Vect3d lightPosition, float maxDistance) {
+	Vect3d rayPosition = voxelPosition;
+	float smallStep = pointSize;
+	while ((rayPosition -voxelPosition).SquaredLength() < maxDistance* maxDistance) {
+		rayPosition += directionalLightDirection * smallStep;
+
+		if (isVoxelAt(rayPosition)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void GeneratePerlinNoise() {
 	PerlinNoise2d noise = PerlinNoise2d();
 	for (float i = -1.0; i < 1.0; i+=0.01) {
@@ -330,16 +365,29 @@ void VisualizeVoxelPoints() {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
 				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
-					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1);
+
+					Vect3d normal = terrain[i][j].pt - terrain[i][j].pt + 0.1 * terrain[i][j].normal;
+					
+					float light = fmax(terrain[i][j].normal.Dot(-diffuseLightDirection), 0);
+					if (k == terrain[i][j].pt.y() - pointSize) {
+						if (!isShadowed(terrain[i][j].pt, directionalLightDirection, (terrain[i][j].pt - directionalLightPosition).SquaredLength())) {
+							float dire = fmax(terrain[i][j].normal.Dot(-directionalLightDirection), 0) * directionalLightIntensity;
+							light += dire;
+						}
+					}
+					float totalLight = light * (1-ambientLightIntensity) + ambientLightIntensity;
+					totalLight = fmin(totalLight, 1.0);
+					//Vect3d color = Vect3d(totalLight, totalLight, totalLight);
+					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1) * totalLight;
 					if (terrain[i][j].isEroded) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(0,0,0), 25);
 					}
 					else if(terrain[i][j].isDeposited) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(1, 0, 0), 25);
 					}
-	else {
-		DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
-	}
+					else {
+						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+					}
 				}
 			}
 		}
@@ -347,6 +395,7 @@ void VisualizeVoxelPoints() {
 	else {
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
+
 				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
 				if (showNormals) {
 					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 0, 0));
