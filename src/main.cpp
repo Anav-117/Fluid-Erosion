@@ -412,11 +412,10 @@ void VisualizeVoxelPoints() {
 						DrawPoint(terrain[i][j].pt, Vect3d(1, 1, 1), 25);
 					}
 					else {
-						if (k + pointSize > terrain[i][j].pt.y()) {
+						if (k > terrain[i][j].pt.y()) {
 							DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
 						}
 						else {
-							//if(j!= terrain[i].size() -1)
 							DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color * (k+zpos)/(terrain[i][j].pt.y()+zpos), 25);
 						}
 					}
