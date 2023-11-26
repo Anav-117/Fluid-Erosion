@@ -69,10 +69,11 @@ float minHeight = 0.0f;
 float pointSize = 0.03;
 
 float ambientLightIntensity = 0.4f;
+float diffuseLightIntensity = 2.0f;
 Vect3d diffuseLightDirection = Vect3d(0.0, -0.5, 0.0);
-Vect3d directionalLightDirection = Vect3d(0.0, -1.0, 1.0);
-Vect3d directionalLightPosition = Vect3d(0.0, -1.0, 0.0);
-float directionalLightIntensity = 1.0f;
+Vect3d directionalLightDirection = Vect3d(0.0, -0.5, 0.0);
+Vect3d directionalLightPosition = Vect3d(5.0, 5.0, 3.0);
+float directionalLightIntensity = 0.2f;
 
 bool takeScreenshot = true;// false;
 
@@ -274,14 +275,21 @@ bool isVoxelAt(Vect3d pos) {
 		return false;
 	}
 
-	return terrain[(int)(posx / pointSize)][(int)(posz / pointSize)].pt.GetZ() > pos.GetZ();
+	//cout << (int)(posz / pointSize) << " " << terrain[(int)(posx / pointSize)][(int)(posz / pointSize)].pt.GetY() << " " << pos.GetY() << " " << (abs(terrain[(int)(posx / pointSize)][(int)(posz / pointSize)].pt.GetY() - pos.GetY()) < pointSize) << "\n";
+
+	return abs(terrain[(int)(posx / pointSize)][(int)(posz / pointSize)].pt.GetY() - pos.GetY()) < pointSize * 0.1;
 }
 
-bool isShadowed(Vect3d voxelPosition, Vect3d lightPosition, float maxDistance) {
+bool isShadowed(Vect3d voxelPosition, Vect3d lightPosition) {
 	Vect3d rayPosition = voxelPosition;
 	float smallStep = pointSize;
-	while ((rayPosition -voxelPosition).SquaredLength() < maxDistance* maxDistance) {
-		rayPosition += directionalLightDirection * smallStep;
+	Vect3d dirLightDir = (lightPosition - voxelPosition).GetNormalized();
+
+	while ((rayPosition - lightPosition).SquaredLength() > smallStep * smallStep) {
+		//cout << rayPosition.GetX() << " " << rayPosition.GetY() << " " << rayPosition.GetZ() << " ";
+		//cout << lightPosition.GetX() << " " << lightPosition.GetY() << " " << lightPosition.GetZ() << "\n";
+
+		rayPosition += dirLightDir * smallStep;
 
 		if (isVoxelAt(rayPosition)) {
 			return true;
@@ -289,6 +297,7 @@ bool isShadowed(Vect3d voxelPosition, Vect3d lightPosition, float maxDistance) {
 	}
 	return false;
 }
+
 void SetTerrainNormals() {
 #pragma omp parallel for collapse(2)
 	for (int i = 0; i < terrain.size(); i++) {
@@ -384,20 +393,17 @@ void VisualizeVoxelPoints() {
 
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
-				for (float k = -zpos; k < terrain[i][j].pt.y(); k+=pointSize) {
-
-					Vect3d normal = terrain[i][j].pt - terrain[i][j].pt + 0.1 * terrain[i][j].normal;
+				for (float k = -zpos; k <= terrain[i][j].pt.y(); k+=pointSize) {
 					
-					float light = fmax(terrain[i][j].normal.Dot(-diffuseLightDirection), 0);
-					if (k == terrain[i][j].pt.y() - pointSize) {
-						if (!isShadowed(terrain[i][j].pt, directionalLightDirection, (terrain[i][j].pt - directionalLightPosition).SquaredLength())) {
-							float dire = fmax(terrain[i][j].normal.Dot(-directionalLightDirection), 0) * directionalLightIntensity;
-							light += dire;
+					float light = fmax(terrain[i][j].normal.Dot(-diffuseLightDirection), 0) * diffuseLightIntensity;
+					if (k + pointSize > terrain[i][j].pt.y()) {
+						if (!isShadowed(terrain[i][j].pt, directionalLightDirection)) {
+							light += fmax(terrain[i][j].normal.Dot(-directionalLightDirection), 0) * directionalLightIntensity;
 						}
 					}
 					float totalLight = light * (1-ambientLightIntensity) + ambientLightIntensity;
 					totalLight = fmin(totalLight, 1.0);
-					//Vect3d color = Vect3d(totalLight, totalLight, totalLight);
+					//Vect3d color = Vect3d(totalLight, 0.0, totalLight);
 					Vect3d color = colorInterpolator.interpolate((k + zpos) / (maxHeight - minHeight) * 0.9 + 0.1) * totalLight;
 					if (terrain[i][j].isEroded) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(0,0,0), 25);
@@ -406,7 +412,13 @@ void VisualizeVoxelPoints() {
 						DrawPoint(terrain[i][j].pt, Vect3d(1, 1, 1), 25);
 					}
 					else {
-						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+						if (k + pointSize > terrain[i][j].pt.y()) {
+							DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
+						}
+						else {
+							//if(j!= terrain[i].size() -1)
+							DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color * (k+zpos)/(terrain[i][j].pt.y()+zpos), 25);
+						}
 					}
 				}
 			}
@@ -616,10 +628,13 @@ void MouseMotion(int x, int y) {
 
 int main(int argc, char** argv)
 {
-	colorInterpolator.addColorPoint(0.0, Vect3d(0.1, 0.1, 0.1)); // Gray
-	colorInterpolator.addColorPoint(0.33, Vect3d(0.8, 0.8, 0.1)); // Yellow
-	colorInterpolator.addColorPoint(0.66, Vect3d(0.1, 0.5, 0.0)); // Dark Green
-	colorInterpolator.addColorPoint(1.0, Vect3d(0.2, .8, 0.0)); // Less Dark Green
+	colorInterpolator.addColorPoint(0.0, Vect3d(120.0/255, 79.0/255, 44.0/255));
+	colorInterpolator.addColorPoint(1.0, Vect3d(153.0 / 255, 103.0 / 255, 54.0 / 255));
+
+	//colorInterpolator.addColorPoint(0.0, Vect3d(0.1, 0.1, 0.1)); // Gray
+	//colorInterpolator.addColorPoint(0.33, Vect3d(0.8, 0.8, 0.1)); // Yellow
+	//colorInterpolator.addColorPoint(0.66, Vect3d(0.1, 0.5, 0.0)); // Dark Green
+	//colorInterpolator.addColorPoint(1.0, Vect3d(0.2, .8, 0.0)); // Less Dark Green
 
 	//fluid = Fluid(particleMatrixSize);
 	SetTerrainNormals();
