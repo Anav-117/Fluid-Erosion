@@ -65,7 +65,7 @@ float ypos = 0.0f;
 float terrainLength = 3.0f;
 float terrainWidth = 3.0f;
 float maxHeight = 0.8f;
-float minHeight = 0.0f;
+float minHeight = 0.05f;
 float pointSize = 0.03;
 
 float ambientLightIntensity = 0.4f;
@@ -412,7 +412,7 @@ void VisualizeVoxelPoints() {
 						DrawPoint(terrain[i][j].pt, Vect3d(1, 1, 1), 25);
 					}
 					else {
-						if (k > terrain[i][j].pt.y()) {
+						if (k + pointSize > terrain[i][j].pt.y()) {
 							DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
 						}
 						else {
