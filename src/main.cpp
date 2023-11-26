@@ -27,6 +27,8 @@
 #include "ColorInterpolator.h"
 #include "math/vect3d.h"
 #include <fstream>
+#include<windows.h> 
+#include <omp.h>
 
 //in house created libraries
 #include "math/vect3d.h"    //for vector manipulation
@@ -52,7 +54,7 @@ GLfloat  sign = +1; //diretcion of rotation
 const GLfloat defaultIncrement = 0.7f; //speed of rotation
 GLfloat  angleIncrement = defaultIncrement;
 
-int particleMatrixSize[3] = { 5,5,5 };
+int particleMatrixSize[3] = { 5, 5, 5 };
 Fluid fluid(particleMatrixSize);
 
 PerlinNoise2d noise = PerlinNoise2d(0, 32, 1, 1, 10, 10);
@@ -99,7 +101,7 @@ vector <Vect3d> v;   //all the points will be stored here
 //window size
 GLint wWindow = 1200;
 GLint hWindow = 800;
-int numframes = 10000;
+int numframes = 10000000;
 int framesElapsed = 0;
 
 //this defines what will be rendered
@@ -111,7 +113,8 @@ bool debugMode = false;
 bool showNormals = false;
 int framerate = 1;
 
-float elapsed_time;
+float elapsed_time = 0;
+float screenShotTime = 0;
 int iterations;
 
 /*********************************
@@ -229,56 +232,6 @@ void CoordSyst() {
 
 }
 
-//this is the actual code for the lab
-void FluidStuff() {
-
-	//std::vector<Vect3d> t;
-
-	//for (int i = 0; i < terrain.size(); i++) {
-	//	Vect3d max = Vect3d(0,-10,0);
-	//	for (int j = 0; j < terrain[i].size(); j++) {
-	//		if (terrain[i][j].y() > max.y()) {
-	//			max = terrain[i][j];
-	//		}
-	//	}
-	//	//DrawPoint(max, Vect3d(0, 1, 1), 30);
-	//	t.push_back(max);
-	//}
-
-	terrain = fluid.GetTerrain();
-
-	if (iterations >= framerate) {
-		float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001;
-		fluid.SetTime(new_time - elapsed_time);
-
-		fluid.AdvectParticles();
-
-		elapsed_time = new_time;
-		iterations = 0;
-	}
-
-	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
-
-	for (int i = 0; i < fp.size(); i++) {
-		for (int j = 0; j < fp[i].size(); j++) {
-			for (int k = 0; k < fp[i][j].size(); k++) {
-				Vect3d pos = fp[i][j][k].GetPos();
-				if (debugMode) {
-					DrawPoint(pos, Vect3d(0, 0, 1));
-					if (showNormals) {
-						DrawLine(pos, pos + 0.1 * fp[i][j][k].GetVelocity(), Vect3d(0, 1, 1));
-					}
-				}
-				else {
-					DrawPoint(pos, Vect3d(0, 0, 1), 10);
-				}
-			}
-		}
-	}
-
-	iterations++;
-}
-
 Vect3d TerrainZTangent(TerrainPoint T, std::vector<std::vector<TerrainPoint>>& terrain) {
 	int imin = T.coordi - 1;
 	if (imin < 0) {
@@ -336,6 +289,73 @@ bool isShadowed(Vect3d voxelPosition, Vect3d lightPosition, float maxDistance) {
 	}
 	return false;
 }
+void SetTerrainNormals() {
+#pragma omp parallel for collapse(2)
+	for (int i = 0; i < terrain.size(); i++) {
+		for (int j = 0; j < terrain[i].size(); j++) {
+			terrain[i][j].coordi = i;
+			terrain[i][j].coordj = j;
+		}
+	}
+#pragma omp parallel for collapse(2)
+	for (int i = 0; i < terrain.size(); i++) {
+		for (int j = 0; j < terrain[i].size(); j++) {
+			//DrawPoint(points[i][j].pt, Vect3d(1, 1, 1));
+			terrain[i][j].SetNormal(TerrainNormal(terrain[i][j], terrain));
+		}
+	}
+}
+
+//this is the actual code for the lab
+void FluidStuff() {
+
+	//std::vector<Vect3d> t;
+
+	//for (int i = 0; i < terrain.size(); i++) {
+	//	Vect3d max = Vect3d(0,-10,0);
+	//	for (int j = 0; j < terrain[i].size(); j++) {
+	//		if (terrain[i][j].y() > max.y()) {
+	//			max = terrain[i][j];
+	//		}
+	//	}
+	//	//DrawPoint(max, Vect3d(0, 1, 1), 30);
+	//	t.push_back(max);
+	//}
+
+	terrain = fluid.GetTerrain();
+
+	//if (iterations >= framerate) {
+	//float new_time = glutGet(GLUT_ELAPSED_TIME) *0.0001;
+	//fluid.SetTime(new_time - elapsed_time);
+
+	fluid.AdvectParticles();
+
+	//elapsed_time = new_time;
+		//iterations = 0;
+	//}
+
+	std::vector<std::vector<std::vector<Particle>>> fp = fluid.GetParticles();
+
+	//#pragma omp parallel for collapse(3)
+	for (int i = 0; i < fp.size(); i++) {
+		for (int j = 0; j < fp[i].size(); j++) {
+			for (int k = 0; k < fp[i][j].size(); k++) {
+				Vect3d pos = fp[i][j][k].GetPos();
+				if (debugMode) {
+					DrawPoint(pos, Vect3d(i*1.0f/particleMatrixSize[0], j * 1.0f / particleMatrixSize[1], k * 1.0f / particleMatrixSize[2]));
+					if (showNormals) {
+						DrawLine(pos, pos + 0.1 * fp[i][j][k].GetVelocity(), Vect3d(0, 1, 1));
+					}
+				}
+				else {
+					DrawPoint(pos, Vect3d(0, 0, 1), 10);
+				}
+			}
+		}
+	}
+
+	//iterations++;
+}
 
 void GeneratePerlinNoise() {
 	PerlinNoise2d noise = PerlinNoise2d();
@@ -382,8 +402,8 @@ void VisualizeVoxelPoints() {
 					if (terrain[i][j].isEroded) {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(0,0,0), 25);
 					}
-					else if(terrain[i][j].isDeposited) {
-						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), Vect3d(1, 0, 0), 25);
+					else if (terrain[i][j].isDeposited) {
+						DrawPoint(terrain[i][j].pt, Vect3d(1, 1, 1), 25);
 					}
 					else {
 						DrawPoint(Vect3d(terrain[i][j].pt.x(), k, terrain[i][j].pt.z()), color, 25);
@@ -393,25 +413,17 @@ void VisualizeVoxelPoints() {
 		}
 	}
 	else {
+		//#pragma omp parallel for collapse(2)
 		for (int i = 0; i < terrain.size(); i++) {
 			for (int j = 0; j < terrain[i].size(); j++) {
-
-				DrawPoint(terrain[i][j].pt, Vect3d(0, 0, 0));
+				//printf("i = %d, j= %d,  threadId = %d \n", i, j, omp_get_thread_num());
+				DrawPoint(terrain[i][j].pt, Vect3d(0.0, i * 1.0f / terrain.size(), j * 1.0f / terrain[i].size()));
 				if (showNormals) {
-					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 0, 0));
+					DrawLine(terrain[i][j].pt, terrain[i][j].pt + 0.1 * terrain[i][j].normal, Vect3d(1, 1, 1));
 				}
 			}
 		}
-
-	}
-}
-
-void SetTerrainNormals() {
-	for (int i = 0; i < terrain.size(); i++) {
-		for (int j = 0; j < terrain[i].size(); j++) {
-			//DrawPoint(points[i][j].pt, Vect3d(1, 1, 1));
-			terrain[i][j].SetNormal(TerrainNormal(terrain[i][j], terrain));
-		}
+	
 	}
 }
 
@@ -460,16 +472,24 @@ void RenderObjects()
 	//cout<< glutGet(GLUT_ELAPSED_TIME) <<endl;
 	
 	//DrawLine(Vect3d(-1.5f, 0.0f, 0.0f), Vect3d(0.0f, 0.0f, 0.0f), Vect3d(1.0f, 0.0f, 0.0f));
+	
+	float new_time = glutGet(GLUT_ELAPSED_TIME) * 0.0001 - screenShotTime;
+	fluid.SetTime(new_time - elapsed_time);
+
 	FluidStuff();
+
+	elapsed_time = new_time;
 
 	if (takeScreenshot) {
 		//takeScreenshot = false;
 
-		Screenshot();
+		//Screenshot();
 	}
 
+	screenShotTime = glutGet(GLUT_ELAPSED_TIME) * 0.0001 - elapsed_time;
+
 	framesElapsed++;
-	std::cout << framesElapsed << "\n";
+	//std::cout << framesElapsed << "\n";
 }
 
 //Add here if you want to control some global behavior
