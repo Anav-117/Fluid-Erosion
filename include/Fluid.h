@@ -21,7 +21,6 @@ public:
 	void SetTerrain(std::vector<std::vector<TerrainPoint>> t);
 	std::vector<std::vector<TerrainPoint>> GetTerrain() { return terrain; }
 	Vect3d Reflect(Vect3d I, Vect3d N);
-	Vect3d GetFriction(TerrainPoint closestPoint, Particle fluidParticle);
 	void FixOutliers(TerrainPoint &tp, Particle &fp);
 	bool ShouldDeposit(TerrainPoint &pt);
 	Vect3d GetSource() { return source; }

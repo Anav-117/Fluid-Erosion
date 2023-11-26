@@ -186,10 +186,6 @@ Vect3d Fluid::Reflect(Vect3d I, Vect3d N) {
 	return v_parallel - v_perp;
 }
 
-Vect3d Fluid::GetFriction(TerrainPoint closestPoint, Particle fluidParticle) {
-	return fluidParticle.velocity * 0.001; // TODO: use the correct formula
-}
-
 void Fluid::FixOutliers(TerrainPoint &tp, Particle &fp) {
 	if (fp.velocity.GetY() > 10.0f) {
 		fp.velocity.SetY(0.0f);
@@ -269,7 +265,7 @@ void Fluid::AdvectParticles() {
 					position.v[1] = closestHeight + 0.05f;
 					//velocity.v[1] = -1.0f * velocity.v[1];
 					velocity -= closestPoint.normal * velocity.Dot(closestPoint.normal);
-					velocity -= GetFriction(closestPoint, fp);
+					velocity -= fp.velocity * 0.001;
 
 					int erodeProb = rand() % 10 + 1;
 
